@@ -1,0 +1,19 @@
+:host ::ng-deep app-input-generic input {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+}
+
+:host ::ng-deep app-input-generic input[readonly] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}

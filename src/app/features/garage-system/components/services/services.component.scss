@@ -1,0 +1,77 @@
+@use 'animations' as *;
+@use 'action-bar' as *;
+
+.search-input {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .search-input {
+        min-width: 300px;
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    :host ::ng-deep app-generic-table {
+        .overflow-x-auto {
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+
+        th,
+        td {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .actions-column {
+            position: sticky;
+            right: 0;
+            background-color: white;
+            z-index: 10;
+
+            button {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column;
+
+        .filter-item {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .sort-filters {
+
+        select,
+        button {
+            padding: 0.5rem;
+            min-height: 44px;
+        }
+    }
+}

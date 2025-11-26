@@ -1,0 +1,61 @@
+:host ::ng-deep app-input-generic input {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+}
+
+.vehicle-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid #EC9253;
+}
+
+.vehicle-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.car-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+}
+
+.license-plate {
+    flex-shrink: 0;
+}
+
+.data-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.data-item-icon {
+    color: #9CA3AF;
+    margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+.data-item-label {
+    font-size: 0.75rem;
+    color: #6B7280;
+    margin-right: 0.25rem;
+}
+
+.data-item-value {
+    font-weight: 500;
+    color: #4B5563;
+}

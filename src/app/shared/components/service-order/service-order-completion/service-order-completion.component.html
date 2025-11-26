@@ -1,0 +1,54 @@
+<div class="completion-container">
+    <div class="border-b border-gray-200 pb-3 mb-4">
+        <h3 class="text-lg font-medium text-gray-800">4. Conclusão e Entrega</h3>
+        <p class="text-sm text-gray-500">Finalize o faturamento e registre a entrega do veículo</p>
+    </div>
+
+    <div class="bg-emerald-50 p-4 rounded-lg mb-6 flex items-start" *ngIf="serviceOrderData.status === ServiceOrderStatus.COMPLETED && !readonly">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <div>
+            <p class="text-emerald-700 font-medium">Serviço concluído</p>
+            <p class="text-emerald-600 text-sm">Você pode registrar a entrega do veículo agora.</p>
+        </div>
+    </div>
+
+    <fieldset>
+        <legend class="text-lg font-medium text-gray-700 mb-3 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Faturamento
+        </legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-gray-700 mb-1">Número da NF</label>
+                <input type="text" [(ngModel)]="serviceOrderData.invoiceNumber" name="invoiceNumber" [readonly]="readonly" class="w-full h-12 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#EC9253] focus:outline-none focus:border-[#EC9253]" [ngClass]="{'bg-gray-100 cursor-not-allowed': readonly}" placeholder="Número da nota fiscal" />
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-1">Forma de Pagamento</label>
+                <select [(ngModel)]="serviceOrderData.paymentMethod" name="paymentMethod" [disabled]="readonly" class="w-full h-12 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#EC9253] focus:outline-none focus:border-[#EC9253] bg-white" [ngClass]="{'bg-gray-100 cursor-not-allowed': readonly}">
+                    <option value="">Selecione</option>
+                    <option *ngFor="let option of paymentMethodOptions" [value]="option.value">{{ option.label }}</option>
+                </select>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-700 mb-3">Valores Finais</h3>
+        <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Total em Peças:</span>
+            <span class="font-medium">R$ {{ formatCurrency(serviceOrderData.finalTotalParts || serviceOrderData.estimatedTotalParts || 0) }}</span>
+        </div>
+        <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Total em Serviços:</span>
+            <span class="font-medium">R$ {{ formatCurrency(serviceOrderData.finalTotalServices || serviceOrderData.estimatedTotalServices || 0) }}</span>
+        </div>
+        <div class="flex justify-between pt-2 border-t border-gray-200">
+            <span class="text-gray-700 font-medium">Valor Total:</span>
+            <span class="text-lg font-bold text-[#EC9253]">R$ {{ formatCurrency(serviceOrderData.finalTotal || serviceOrderData.estimatedTotal || 0) }}</span>
+        </div>
+    </div>
+</div>

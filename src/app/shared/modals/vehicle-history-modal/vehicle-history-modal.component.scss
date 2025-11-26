@@ -1,0 +1,94 @@
+@use 'animations' as *;
+
+:host ::ng-deep app-input-generic input {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+}
+
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #EC9253;
+    border-radius: 3px;
+  }
+}
+
+@media (max-width: 768px) {
+  table {
+    font-size: 0.75rem;
+    
+    th, td {
+      padding: 0.5rem 0.375rem;
+    }
+  }
+  
+  .grid-cols-1 {
+    gap: 0.75rem !important;
+  }
+}
+
+tr.hover\:bg-gray-50:hover {
+  background-color: rgba(249, 250, 251, 0.8);
+}
+
+.bg-\[\#EC9253\]\/10 {
+  background-color: rgba(236, 146, 83, 0.1);
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-500 {
+  color: #6B7280;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.transform {
+  transform: translateZ(0);
+}

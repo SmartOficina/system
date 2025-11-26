@@ -1,0 +1,93 @@
+<div>
+    <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">
+                <span *ngIf="!readonly">{{ vehicle ? "Editar Veículo" : "Adicionar Veículo" }}</span>
+                <span *ngIf="readonly">Detalhes do Veículo</span>
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+                <span *ngIf="!readonly">Preencha os dados para {{ vehicle ? "atualizar" : "cadastrar" }} o veículo</span>
+                <span *ngIf="readonly">Visualizando informações detalhadas do veículo</span>
+            </p>
+        </div>
+        <button type="button" (click)="closeModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <form (ngSubmit)="saveVehicle()" class="space-y-6">
+        <div *ngIf="readonly" class="bg-blue-50 text-blue-700 px-3 py-2 rounded-md mb-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Você está no modo visualização. Os campos não podem ser editados.</span>
+            </div>
+            <button type="button" (click)="enableEditing()" class="bg-blue-600 text-white py-1 px-3 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                Editar
+            </button>
+        </div>
+
+        <fieldset>
+            <legend class="text-lg font-medium text-gray-700 mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 016 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Proprietário
+            </legend>
+            <div class="mb-4">
+                <app-client-dropdown #clientDropdown [required]="!readonly" [selectedClientId]="vehicleData.clientId" [selectedClientName]="selectedClientName" (clientSelected)="onClientSelected($event)" [disabled]="readonly"> </app-client-dropdown>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend class="text-lg font-medium text-gray-700 mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Dados do Veículo
+            </legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="relative">
+                    <app-input-generic #licensePlateInput type="licensePlate" label="Placa" [required]="!readonly" [(value)]="vehicleData.licensePlate" (valueChange)="onLicensePlateChange($event)" (blurEvent)="onLicensePlateBlur()" placeholder="ABC1234" [readonly]="readonly"> </app-input-generic>
+                    <div *ngIf="isAutoFilling" class="absolute right-2 top-10 animate-pulse text-yellow-500">
+                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-md"> Buscando dados da placa... </span>
+                    </div>
+                </div>
+                <div>
+                    <app-input-generic type="text" label="Marca/Modelo" [required]="false" [(value)]="vehicleData.brandModel" placeholder="Ex: Volkswagen Gol" [readonly]="readonly"> </app-input-generic>
+                </div>
+                <div>
+                    <app-input-generic type="number" label="Ano de Fabricação" [required]="false" [(value)]="vehicleData.yearOfManufacture" placeholder="Ex: 2022" [readonly]="readonly"> </app-input-generic>
+                </div>
+                <div>
+                    <app-input-generic type="text" label="Cor" [required]="false" [(value)]="vehicleData.color" placeholder="Ex: Branco" [readonly]="readonly"> </app-input-generic>
+                </div>
+                <div class="md:col-span-2">
+                    <app-input-generic type="text" label="Número do Chassi" [required]="false" [(value)]="vehicleData.chassisNumber" placeholder="Ex: 9BWHE21J1X44X0000" [readonly]="readonly"> </app-input-generic>
+                </div>
+            </div>
+        </fieldset>
+
+        <div *ngIf="!readonly" class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
+            <button type="button" (click)="closeModal()" class="mt-3 sm:mt-0 w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200">Cancelar</button>
+            <button type="submit" [disabled]="isLoading || !hasDataChanged" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-[#EC9253] hover:bg-[#f78839] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span *ngIf="!isLoading">Salvar</span>
+                <svg *ngIf="isLoading" class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span *ngIf="isLoading">Salvando...</span>
+            </button>
+        </div>
+
+        <div *ngIf="readonly" class="flex justify-end pt-4 border-t border-gray-200">
+            <button type="button" (click)="closeModal()" class="inline-flex justify-center items-center px-6 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200">Fechar</button>
+        </div>
+    </form>
+</div>

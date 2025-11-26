@@ -1,0 +1,23 @@
+.alerts-container {
+  h3 {
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+}
+
+.alert-item {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.text-primary {
+  color: #EC9253;
+}
+
+.text-primary-dark {
+  color: #d17a3a;
+}

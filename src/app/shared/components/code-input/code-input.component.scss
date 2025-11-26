@@ -1,0 +1,40 @@
+.number-code>div {
+    display: flex;
+    justify-content: center;
+}
+
+.code-input {
+    font-size: 1.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.code-input:focus {
+    border-color: #f78839;
+    box-shadow: 0 0 5px #f78839;
+    outline: none;
+}
+
+@media (max-width: 768px) {
+    .code-input {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.25rem;
+        margin: 0 0.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .code-input {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+        margin: 0 0.3rem;
+    }
+}

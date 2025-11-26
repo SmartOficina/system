@@ -1,0 +1,71 @@
+.calendar-container {
+    overflow-x: auto;
+}
+
+.calendar-day {
+    position: relative;
+    min-height: 100px;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: rgba(236, 146, 83, 0.05);
+    }
+}
+
+.service-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slideIn {
+    animation: slideIn 0.2s ease-out;
+}
+
+@media (max-width: 640px) {
+    .calendar-day {
+        min-height: 80px;
+    }
+}

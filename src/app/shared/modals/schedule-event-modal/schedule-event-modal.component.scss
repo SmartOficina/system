@@ -1,0 +1,53 @@
+:host ::ng-deep app-input-generic input {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+}
+
+:host ::ng-deep app-input-generic input[readonly] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+select,
+textarea,
+input {
+    transition: all 0.2s ease;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

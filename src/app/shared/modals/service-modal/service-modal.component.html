@@ -1,0 +1,87 @@
+<div>
+    <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">
+                <span *ngIf="!readonly">{{ service ? "Editar Serviço" : "Adicionar Serviço" }}</span>
+                <span *ngIf="readonly">Detalhes do Serviço</span>
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+                <span *ngIf="!readonly">Preencha os dados para {{ service ? "atualizar" : "cadastrar" }} o serviço</span>
+                <span *ngIf="readonly">Visualizando informações detalhadas do serviço</span>
+            </p>
+        </div>
+        <button type="button" (click)="closeModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <div *ngIf="readonly" class="bg-blue-50 text-blue-700 px-3 py-2 rounded-md mb-4 flex items-center justify-between">
+        <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Você está no modo visualização. Os campos não podem ser editados.</span>
+        </div>
+        <button type="button" (click)="enableEditing()" class="bg-blue-600 text-white py-1 px-3 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            Editar
+        </button>
+    </div>
+
+    <form (ngSubmit)="saveService()" class="space-y-6">
+        <fieldset>
+            <legend class="text-lg font-medium text-gray-700 mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Informações do Serviço
+            </legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <app-input-generic #codeInput type="text" label="Código" [required]="!readonly" [(value)]="serviceData.code" placeholder="Ex: SRV001" [readonly]="readonly"> </app-input-generic>
+                </div>
+                <div>
+                    <app-input-generic #nameInput type="text" label="Nome" [required]="!readonly" [(value)]="serviceData.name" placeholder="Nome do serviço" [readonly]="readonly"> </app-input-generic>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1">Preço de Venda (R$)</label>
+                    <input type="text" [(ngModel)]="formattedSellingPrice" name="formattedSellingPrice" (ngModelChange)="onSellingPriceChange($event)" [readonly]="readonly" class="w-full h-12 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#EC9253] focus:outline-none focus:border-[#EC9253]" [ngClass]="{ 'bg-gray-100 cursor-not-allowed': readonly }" />
+                </div>
+                <div>
+                    <app-input-generic #profitMarginInput type="number" label="Margem de Lucro (%)" [required]="false" [(value)]="serviceData.profitMargin" placeholder="Ex: 30" [readonly]="readonly" (valueChange)="onMarginChange($event)"> </app-input-generic>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1">Preço de Custo (R$)</label>
+                    <input type="text" [(ngModel)]="formattedCostPrice" name="formattedCostPrice" (ngModelChange)="onCostPriceChange($event)" [readonly]="readonly || calculateFromMargin" class="w-full h-12 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#EC9253] focus:outline-none focus:border-[#EC9253]" [ngClass]="{ 'bg-gray-100 cursor-not-allowed': readonly || calculateFromMargin }" />
+                </div>
+                <div *ngIf="!readonly" class="mt-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="calculateFromMargin" [(ngModel)]="calculateFromMargin" name="calculateFromMargin" class="h-4 w-4 text-[#EC9253] focus:ring-[#EC9253] rounded" (change)="onCalculationModeChange()" />
+                        <label for="calculateFromMargin" class="ml-2 block text-sm text-gray-700"> Calcular custo a partir da margem </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div *ngIf="!readonly" class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
+            <button type="button" (click)="closeModal()" class="mt-3 sm:mt-0 w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200">Cancelar</button>
+            <button type="submit" [disabled]="isLoading || !hasDataChanged" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-[#EC9253] hover:bg-[#f78839] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span *ngIf="!isLoading">Salvar</span>
+                <svg *ngIf="isLoading" class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span *ngIf="isLoading">Salvando...</span>
+            </button>
+        </div>
+
+        <div *ngIf="readonly" class="flex justify-end pt-4 border-t border-gray-200">
+            <button type="button" (click)="closeModal()" class="inline-flex justify-center items-center px-6 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200">Fechar</button>
+        </div>
+    </form>
+</div>

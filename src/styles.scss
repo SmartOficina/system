@@ -1,0 +1,16 @@
+@use 'variables' as *;
+@use 'fonts' as *;
+@use 'base' as *;
+@use 'typography' as *;
+@use 'animations' as *;
+@use 'buttons' as *;
+@use 'cards' as *;
+@use 'badges' as *;
+@use 'tables' as *;
+@use 'utilities' as *;
+@use 'scrollbar' as *;
+@use 'sweetalert' as *;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

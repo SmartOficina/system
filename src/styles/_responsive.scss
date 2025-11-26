@@ -1,0 +1,44 @@
+@media (max-width: 768px) {
+    .flex-responsive {
+        flex-direction: column;
+    }
+
+    header .container {
+        height: 60px;
+    }
+
+    .submenu-container {
+        width: 100%;
+        left: 0;
+        top: 60px;
+        border-radius: 0;
+    }
+
+    #mobile-menu {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 12px 12px;
+        z-index: 49;
+    }
+
+    nav a,
+    footer a {
+        margin: 0.5rem 0;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        font-size: 14px;
+    }
+
+    .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}

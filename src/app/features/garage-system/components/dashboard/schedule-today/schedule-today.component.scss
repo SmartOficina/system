@@ -1,0 +1,57 @@
+.schedule-container {
+  h3 {
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+}
+
+.schedule-item {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.time-badge {
+  border: 1px solid;
+}
+
+.bg-primary {
+  background-color: #EC9253;
+}
+
+.bg-primary-dark {
+  background-color: #d17a3a;
+}
+
+.text-primary {
+  color: #EC9253;
+}
+
+.text-primary-dark {
+  color: #d17a3a;
+}
+
+.hover\\:bg-primary-dark:hover {
+  background-color: #d17a3a;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

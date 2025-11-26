@@ -1,0 +1,91 @@
+#login {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+}
+
+.carousel-images {
+    position: relative;
+}
+
+.carousel-images img {
+    min-width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease-in-out;
+}
+
+.dot {
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    z-index: 10;
+}
+
+.dot:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+button {
+    transition: all 0.3s ease-in-out;
+    font-family: 'Galano-Bold';
+}
+
+form {
+    width: 100%;
+}
+
+.code-input {
+    font-size: 1.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    text-align: center;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    margin: 0 0.5rem;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.code-input:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 10px rgba(236, 146, 83, 0.3);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+    .lg\\:flex {
+        display: none !important;
+    }
+
+    .lg\\:w-1\/2 {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .w-\[90\%\] {
+        width: 95% !important;
+    }
+
+    .p-8 {
+        padding: 1.5rem !important;
+    }
+}

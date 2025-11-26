@@ -1,0 +1,202 @@
+<app-table-skeleton *ngIf="isLoading" [columns]="getSkeletonColumns()" [hasCheckbox]="selectable" [hasActions]="!!getActionColumn()" [rows]="itemsPerPage"> </app-table-skeleton>
+<div *ngIf="!isLoading" class="min-w-full relative overflow-x-auto">
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-gray-100">
+            <tr>
+                <th *ngIf="selectable" class="py-2 px-3 text-center w-10">
+                    <div class="flex justify-center">
+                        <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll()" class="w-4 h-4 rounded border-gray-300 text-[#EC9253] focus:ring-[#EC9253]" title="Selecionar todos os itens" />
+                    </div>
+                </th>
+                <th *ngFor="let col of getNonActionColumns()" class="py-2 px-4 text-left">{{ col.header }}</th>
+                <th *ngIf="getActionColumn()" class="py-2 px-4 text-center sticky right-0 bg-gray-100 shadow-sm z-10 w-28 actions-column">
+                    {{ getActionColumn()?.header }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngIf="data && data.length; else noData">
+                <tr *ngFor="let item of data" class="border-b hover:bg-gray-50" [ngClass]="{ 'bg-orange-50': isSelected(item) }">
+                    <td *ngIf="selectable" class="py-2 px-3 text-center">
+                        <div class="flex justify-center">
+                            <input type="checkbox" [checked]="isSelected(item)" (change)="toggleSelect(item)" class="w-4 h-4 rounded border-gray-300 text-[#EC9253] focus:ring-[#EC9253]" title="Selecionar este item" />
+                        </div>
+                    </td>
+                    <td *ngFor="let col of getNonActionColumns()" class="py-2 px-4">
+                        <ng-container *ngIf="col.isDate; else clientLinkCheck">
+                            {{ getCellValue(item, col.field) | formatDate }}
+                        </ng-container>
+                        <ng-template #clientLinkCheck>
+                            <ng-container *ngIf="col.type === 'client-button'; else historyCheck">
+                                <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewClient(item)" title="Ver detalhes do cliente">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                </button>
+                                <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm"> Cliente não associado </span>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #historyCheck>
+                            <ng-container *ngIf="col.type === 'history-button'; else serviceOrderCheck">
+                                <button (click)="onViewHistory(item)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" title="Visualizar histórico completo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Ver histórico
+                                </button>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #serviceOrderCheck>
+                            <ng-container *ngIf="col.type === 'vehicle-button'; else vehicleButtonCheck">
+                                <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewVehicle(item)" title="Ver detalhes do veículo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-700" viewBox="0 0 512 512" fill="currentColor">
+                                        <path d="M499.99 176h-59.87l-16.64-41.6C406.38 91.63 365.57 64 319.5 64h-127c-46.06 0-86.88 27.63-103.99 70.4L71.87 176H12.01C4.2 176-1.53 183.34.37 190.91l6 24C7.7 220.25 12.5 224 18.01 224h20.07C24.65 235.73 16 252.78 16 272v48c0 16.12 6.16 30.67 16 41.93V416c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32h256v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-54.07c9.84-11.25 16-25.8 16-41.93v-48c0-19.22-8.65-36.27-22.07-48H494c5.51 0 10.31-3.75 11.64-9.09l6-24c1.89-7.57-3.84-14.91-11.65-14.91zm-352.06-17.83c7.29-18.22 24.94-30.17 44.57-30.17h127c19.63 0 37.28 11.95 44.57 30.17L384 208H128l19.93-49.83zM96 319.8c-19.2 0-32-12.76-32-31.9S76.8 256 96 256s48 28.71 48 47.85-28.8 15.95-48 15.95zm320 0c-19.2 0-48 3.19-48-15.95S396.8 256 416 256s32 12.76 32 31.9-12.8 31.9-32 31.9z" />
+                                    </svg>
+                                    {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                </button>
+                                <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm">Sem veículo</span>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #vehicleButtonCheck>
+                            <ng-container *ngIf="col.type === 'service-order-button'; else supplierCheck">
+                                <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewServiceOrder(item)" title="Ver detalhes da ordem de serviço">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                </button>
+                                <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm">-</span>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #supplierCheck>
+                            <ng-container *ngIf="col.type === 'supplier-button'; else partCheck">
+                                <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewSupplier(item)" title="Ver detalhes do fornecedor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                    {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                </button>
+                                <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm">-</span>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #partCheck>
+                            <ng-container *ngIf="col.type === 'part-button'; else customCheck">
+                                <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewPart(item)" title="Ver detalhes da peça">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                </button>
+                                <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm">-</span>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #customCheck>
+                            <ng-container *ngIf="col.type === 'custom'; else hasVehiclesCheck">
+                                <ng-container *ngIf="col.field === 'partId.name'">
+                                    <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewPart(item)" title="Ver detalhes da peça">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                    </button>
+                                    <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm">-</span>
+                                </ng-container>
+                                <ng-container *ngIf="col.field !== 'partId.name'">
+                                    <ng-container *ngIf="item.movementType === 'exit' && item.exitType === 'service_order'">
+                                        <button class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewServiceOrder(item)" title="Ver ordem de serviço associada">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                        </button>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.movementType === 'entry' && item.supplierId">
+                                        <button class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewSupplier(item)" title="Ver fornecedor associado">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            </svg>
+                                            {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                        </button>
+                                    </ng-container>
+                                    <ng-container *ngIf="!(item.movementType === 'exit' && item.exitType === 'service_order') && !(item.movementType === 'entry' && item.supplierId)">
+                                        <span class="text-gray-600 text-sm">
+                                            {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                        </span>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #hasVehiclesCheck>
+                            <span *ngIf="col.hasVehicles; else whatsappPhoneCheck">
+                                <button *ngIf="item.vehicles && item.vehicles.length > 0" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="onViewVehicles(item)" title="Ver todos os veículos deste cliente">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 mr-1" viewBox="0 0 512 512" fill="currentColor">
+                                        <path d="M499.99 176h-59.87l-16.64-41.6C406.38 91.63 365.57 64 319.5 64h-127c-46.06 0-86.88 27.63-103.99 70.4L71.87 176H12.01C4.2 176-1.53 183.34.37 190.91l6 24C7.7 220.25 12.5 224 18.01 224h20.07C24.65 235.73 16 252.78 16 272v48c0 16.12 6.16 30.67 16 41.93V416c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32h256v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-54.07c9.84-11.25 16-25.8 16-41.93v-48c0-19.22-8.65-36.27-22.07-48H494c5.51 0 10.31-3.75 11.64-9.09l6-24c1.89-7.57-3.84-14.91-11.65-14.91zm-352.06-17.83c7.29-18.22 24.94-30.17 44.57-30.17h127c19.63 0 37.28 11.95 44.57 30.17L384 208H128l19.93-49.83zM96 319.8c-19.2 0-32-12.76-32-31.9S76.8 256 96 256s48 28.71 48 47.85-28.8 15.95-48 15.95zm320 0c-19.2 0-48 3.19-48-15.95S396.8 256 416 256s32 12.76 32 31.9-12.8 31.9-32 31.9z" />
+                                    </svg>
+                                    Ver Veículos
+                                </button>
+                                <span *ngIf="!item.vehicles || item.vehicles.length === 0" class="text-gray-400 text-sm"> Sem veículos </span>
+                            </span>
+                        </ng-template>
+                        <ng-template #whatsappPhoneCheck>
+                            <ng-container *ngIf="col.type === 'whatsapp-phone'; else normalText">
+                                <button *ngIf="getCellValue(item, col.field)" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-md flex items-center text-sm font-medium hover:bg-gray-200 transition-colors" (click)="openWhatsApp(getCellValue(item, col.field))" title="Abrir WhatsApp">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+                                    </svg>
+                                    {{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}
+                                </button>
+                                <span *ngIf="!getCellValue(item, col.field)" class="text-gray-400 text-sm">-</span>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #normalText>
+                            <span *ngIf="!col.isHtml">{{ col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field) }}</span>
+                            <span *ngIf="col.isHtml" [innerHTML]="col.transform ? col.transform(getCellValue(item, col.field), item) : getCellValue(item, col.field)"></span>
+                        </ng-template>
+                    </td>
+
+                    <td *ngIf="getActionColumn()" class="py-2 px-4 text-center sticky right-0 bg-white hover:bg-gray-50 shadow-sm z-10 actions-column" [ngClass]="getActionColumn()?.type === 'print-actions' ? 'w-48' : 'w-40'">
+                        <div class="flex justify-center space-x-2">
+                            <button (click)="onView(item)" class="bg-blue-500 text-white h-8 w-8 rounded-full hover:bg-blue-600 transition-colors duration-200 shadow-sm flex items-center justify-center" title="Visualizar detalhes">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                            <button (click)="onEdit(item)" class="bg-yellow-500 text-white h-8 w-8 rounded-full hover:bg-yellow-600 transition-colors duration-200 shadow-sm flex items-center justify-center" title="Editar informações">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </button>
+                            <button *ngIf="getActionColumn()?.type === 'print-actions'" (click)="onPrint(item)" class="bg-purple-500 text-white h-8 w-8 rounded-full hover:bg-purple-600 transition-colors duration-200 shadow-sm flex items-center justify-center" title="Imprimir ordem de serviço">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                            </button>
+                            <button (click)="onRemove(item)" class="bg-red-500 text-white h-8 w-8 rounded-full hover:bg-red-600 transition-colors duration-200 shadow-sm flex items-center justify-center" title="Excluir item">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+            <ng-template #noData>
+                <tr>
+                    <td [attr.colspan]="selectable ? columns.length + 1 : columns.length" class="py-4 text-center text-gray-500">
+                        <div class="flex flex-col items-center justify-center p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="text-base font-medium">Nenhum registro encontrado</p>
+                            <p class="text-sm">Tente ajustar seus filtros ou adicionar novos registros</p>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </tbody>
+    </table>
+</div>

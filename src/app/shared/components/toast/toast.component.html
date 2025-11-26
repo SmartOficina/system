@@ -1,0 +1,17 @@
+<div class="toast-wrapper">
+    <div class="toast" [ngClass]="{ active: active }" [class]="getToastClass()" *ngIf="toast">
+        <div class="toast-content">
+            <div class="icon-container" [ngClass]="getToastClass()">
+                <img [src]="getIconPath()" alt="Icon" class="toast-icon" />
+            </div>
+            <div class="message">
+                <span class="text text-1">{{ toast.title }}</span>
+                <span class="text text-2">{{ toast.message }}</span>
+            </div>
+        </div>
+        <div class="close-button" (click)="close()">
+            <img src="../../../../assets/icons/xmark-solid.svg" alt="Close" class="close-icon" />
+        </div>
+        <div class="progress" [ngClass]="{ active: progressActive }"></div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="flex flex-col p-3 md:p-6 animate-fadeIn">
+  <div class="mb-4 md:mb-6">
+    <h1 class="text-xl md:text-2xl font-bold mb-1 text-gray-800 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-7 md:w-7 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
+      </svg>
+      Dashboard
+    </h1>
+    <p class="text-gray-500 text-sm md:text-base mb-4">Visão geral do seu negócio</p>
+  </div>
+
+  <!-- Controles superiores -->
+  <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row md:justify-between md:items-center mb-4 md:mb-6">
+    <!-- Atualizado às -->
+    <div class="text-sm md:text-base text-gray-500 order-2 md:order-1 mt-4 md:mt-0">
+      <div class="flex items-center justify-between">
+        <span class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Atualizado às: {{ lastUpdateTime | date : "HH:mm" }}
+        </span>
+        <button 
+          (click)="refreshData()"
+          [disabled]="loading"
+          class="text-[#EC9253] hover:text-[#f78839] p-2 rounded-full hover:bg-orange-50 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" 
+          title="Atualizar dados do dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" [ngClass]="loading ? 'animate-spin' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Controles -->
+    <div class="grid grid-cols-1 md:flex md:items-center gap-2 md:gap-4 order-1 md:order-2">
+      <!-- Período -->
+      <div class="flex flex-col md:flex-row md:items-center md:space-x-2">
+        <label for="periodSelect" class="text-xs md:text-sm text-gray-600 mb-1 md:mb-0">Período:</label>
+        <select 
+          id="periodSelect"
+          [(ngModel)]="selectedPeriod" 
+          (change)="onPeriodChange()"
+          class="border border-gray-300 rounded-md text-xs md:text-sm py-2 md:py-1 px-2 focus:outline-none focus:ring-2 focus:ring-[#EC9253] focus:border-[#EC9253]">
+          <option value="today">Hoje</option>
+          <option value="week">Esta Semana</option>
+          <option value="month">Este Mês</option>
+          <option value="quarter">Trimestre</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-0">
+      <div class="flex items-center flex-1">
+        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+        <p class="text-red-700 text-sm md:text-base">{{ errorMessage }}</p>
+      </div>
+      <button 
+        (click)="refreshData()"
+        class="px-3 py-2 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 self-start md:ml-auto">
+        Tentar Novamente
+      </button>
+    </div>
+  </div>
+
+  <app-overview-cards 
+    [data]="overviewData"
+    [loading]="loading"
+    class="block mb-4 md:mb-6">
+  </app-overview-cards>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+    <app-service-orders-chart 
+      [data]="serviceOrdersData"
+      [loading]="loading">
+    </app-service-orders-chart>
+    
+    <app-revenue-chart 
+      [data]="financialData"
+      [period]="selectedPeriod"
+      [loading]="loading">
+    </app-revenue-chart>
+  </div>
+
+  <div class="mb-4 md:mb-6">
+    <app-schedule-today 
+      [events]="todaySchedule"
+      [loading]="loading">
+    </app-schedule-today>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
+    <app-inventory-summary 
+      [data]="inventoryData"
+      [loading]="loading">
+    </app-inventory-summary>
+    
+    <app-critical-alerts 
+      [alerts]="criticalAlerts"
+      class="lg:col-span-2">
+    </app-critical-alerts>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="stepper-container">
+  <div class="stepper-steps">
+    <div *ngFor="let step of steps; let i = index" class="stepper-step" [class.active]="step.active"
+      [class.completed]="step.completed" [class.disabled]="step.disabled && !readonly" (click)="changeTab(step.id)">
+      <div class="step-indicator">
+        <div class="step-number" *ngIf="!step.completed">{{ i + 1 }}</div>
+        <div class="step-check" *ngIf="step.completed">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">{{ step.label }}</div>
+      </div>
+      <div class="step-connector" *ngIf="i < steps.length - 1"></div>
+    </div>
+  </div>
+</div>

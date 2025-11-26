@@ -1,0 +1,59 @@
+:root {
+    --primary: #EC9253;
+    --primary-hover: #f78839;
+    --primary-light: rgba(236, 146, 83, 0.15);
+    --primary-dark: #d87a3a;
+
+    --secondary: #42130F;
+    --secondary-hover: #5a1c14;
+    --secondary-light: rgba(66, 19, 15, 0.08);
+
+    --success: #4CAF50;
+    --success-hover: #3e9142;
+    --success-light: rgba(76, 175, 80, 0.15);
+    --warning: #FFC107;
+    --warning-hover: #e5ac00;
+    --warning-light: rgba(255, 193, 7, 0.15);
+    --danger: #F44336;
+    --danger-hover: #d32f2f;
+    --danger-light: rgba(244, 67, 54, 0.15);
+    --info: #3B82F6;
+    --info-light: rgba(59, 130, 246, 0.15);
+    --info-hover: #2563eb;
+
+    --neutral-50: #fafafa;
+    --neutral-100: #f5f5f5;
+    --neutral-200: #e5e5e5;
+    --neutral-300: #d4d4d4;
+    --neutral-400: #a3a3a3;
+    --neutral-500: #737373;
+    --neutral-600: #525252;
+    --neutral-700: #404040;
+    --neutral-800: #262626;
+    --neutral-900: #171717;
+
+    --bg-gradient-start: #FDF8F5;
+    --bg-gradient-end: #FFF1E8;
+    --bg-white: #ffffff;
+    --bg-light: #FBE6D8;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 350ms ease;
+
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+
+    --breakpoint-xs: 375px;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+}

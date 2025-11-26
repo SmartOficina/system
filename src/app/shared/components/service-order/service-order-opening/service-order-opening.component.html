@@ -1,0 +1,74 @@
+<div class="opening-container">
+    <div class="border-b border-gray-200 pb-3 mb-4">
+        <h3 class="text-lg font-medium text-gray-800">1. Abertura da Ordem de Serviço</h3>
+        <p class="text-sm text-gray-500">Preencha as informações iniciais sobre o veículo e o problema</p>
+    </div>
+
+    <fieldset>
+        <legend class="text-lg font-medium text-gray-700 mb-3 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Informações Básicas
+        </legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <app-vehicle-dropdown #vehicleDropdown [required]="!readonly" [selectedVehicleId]="serviceOrderData.vehicleId" [selectedVehiclePlate]="selectedVehiclePlate" (vehicleSelected)="onVehicleSelected($event)" [disabled]="readonly"> </app-vehicle-dropdown>
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-1">Data de Abertura</label>
+                <input type="date" [(ngModel)]="serviceOrderData.openingDate" name="openingDate" [disabled]="readonly" class="w-full h-12 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#EC9253] focus:outline-none focus:border-[#EC9253] transition duration-200" [ngClass]="{ 'bg-gray-100 cursor-not-allowed': readonly }" />
+            </div>
+            <div>
+                <app-input-generic #currentMileageInput type="text" label="Quilometragem Atual" [required]="false" [(value)]="formattedMileage" (input)="onMileageInput($event)" placeholder="Ex: 45.000" [readonly]="readonly"> </app-input-generic>
+            </div>
+            <div class="md:col-span-2">
+                <app-input-generic #reportedProblemInput type="text" label="Problema Relatado pelo Cliente" [required]="!readonly" [(value)]="serviceOrderData.reportedProblem" placeholder="Descreva o problema relatado pelo cliente" [readonly]="readonly"> </app-input-generic>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="mt-6">
+        <legend class="text-lg font-medium text-gray-700 mb-3 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Check-list de Entrada
+        </legend>
+        <div>
+            <div class="mb-2">
+                <label class="text-gray-700 block mb-1">Nível de Combustível</label>
+                <div class="flex items-center">
+                    <input type="range" min="0" max="100" step="5" [(ngModel)]="serviceOrderData.fuelLevel" name="fuelLevel" [disabled]="readonly" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                    <span class="ml-2 text-sm w-12 text-gray-700">{{ serviceOrderData.fuelLevel }}%</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                <div *ngFor="let item of serviceOrderData.entryChecklist; let i = index" class="flex items-center">
+                    <input type="checkbox" [(ngModel)]="item.checked" [name]="'checklist_' + i" [disabled]="readonly" class="h-4 w-4 text-[#EC9253] focus:ring-[#EC9253] border-gray-300 rounded" />
+                    <label class="ml-2 text-sm text-gray-700">{{ item.description }}</label>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="text-gray-700 block mb-1">Avarias Visíveis</label>
+                <div class="max-h-48 overflow-y-auto pr-1">
+                    <div *ngFor="let damage of serviceOrderData.visibleDamages || []; let i = index" class="flex mb-2">
+                        <input type="text" class="w-full h-12 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-[#EC9253] focus:outline-none focus:border-[#EC9253]" [ngModel]="damage" (ngModelChange)="onDamageInputChange(i, $event)" placeholder="Descreva a avaria" [readonly]="readonly" [ngClass]="{ 'bg-gray-100': readonly }" />
+                        <button *ngIf="!readonly" type="button" (click)="removeVisibleDamage(i)" class="ml-2 text-red-500 hover:text-red-700 flex-shrink-0 self-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button *ngIf="!readonly" type="button" (click)="addVisibleDamage()" class="mt-2 text-sm text-[#EC9253] hover:text-[#f78839] flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Adicionar avaria
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -1,0 +1,240 @@
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Histórico do Veículo
+            </h2>
+            <p class="text-sm text-gray-500 mt-1 flex items-center">
+                <span class="font-medium bg-gray-100 text-gray-800 px-2 py-1 rounded mr-2">{{ vehicleInfo.licensePlate }}</span>
+                <span>{{ vehicleInfo.brandModel }}</span>
+            </p>
+        </div>
+        <button type="button" (click)="closeModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200 hover:bg-gray-100 p-2 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <div *ngIf="paginatedHistory.length === 0" class="bg-yellow-50 text-yellow-700 px-6 py-8 rounded-xl mb-6 flex items-center justify-center animate-fadeIn shadow-sm border border-yellow-100">
+        <div class="flex flex-col items-center text-center">
+            <span class="text-5xl mb-4">🔍</span>
+            <h3 class="font-medium text-xl mb-2">Histórico vazio</h3>
+            <p class="text-base max-w-md">Este veículo ainda não possui registros de serviços. Quando houver uma ordem de serviço concluída, o histórico aparecerá aqui!</p>
+        </div>
+    </div>
+
+    <div *ngIf="paginatedHistory.length > 0" class="mb-6">
+        <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 mb-1">Total de Serviços</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ vehicleHistory.summary.totalServices | brazilianCurrency }}</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 text-blue-700 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 mb-1">Total de Peças</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ vehicleHistory.summary.totalParts | brazilianCurrency }}</p>
+                    </div>
+                    <div class="p-3 bg-green-100 text-green-700 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 mb-1">Ordens de Serviço</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ vehicleHistory.summary.totalOrders }}</p>
+                    </div>
+                    <div class="p-3 bg-orange-100 text-[#EC9253] rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div *ngFor="let order of paginatedHistory" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50">
+                    <div class="flex items-center space-x-4" (click)="toggleOrderDetails(order._id)">
+                        <div class="p-3 bg-gray-100 text-gray-600 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                                {{ order.orderNumber }}
+                            </h3>
+                            <div class="flex items-center flex-wrap mt-1">
+                                <span class="px-3 py-1 text-xs rounded-full font-medium mr-2 mb-1" [ngClass]="getStatusClass(order.status)">
+                                    {{ getStatusTranslation(order.status) }}
+                                </span>
+                                <span *ngIf="order.openingDate" class="text-xs text-gray-500 mr-2 mb-1 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    {{ order.openingDate | date : "dd/MM/yyyy" }}
+                                </span>
+                                <span *ngIf="order.completionDate" class="text-xs text-gray-500 mb-1 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    {{ order.completionDate | date : "dd/MM/yyyy" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="font-bold text-gray-800 text-lg">{{ order.finalTotal | brazilianCurrency }}</span>
+
+                        <button (click)="printOrder(order)" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg transition-colors duration-200 flex items-center justify-center" title="Imprimir OS">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z" />
+                            </svg>
+                        </button>
+
+                        <div (click)="toggleOrderDetails(order._id)" class="p-2 rounded-full cursor-pointer transition-all duration-300" [ngClass]="{ 'bg-gray-100 hover:bg-gray-200': expandedOrderId !== order._id, 'bg-[#EC9253] text-white hover:bg-[#f78839]': expandedOrderId === order._id }">
+                            <svg class="h-5 w-5 transition-transform duration-300" [ngClass]="{ 'rotate-180': expandedOrderId === order._id }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="expandedOrderId === order._id" class="details-container">
+                    <div class="p-5 border-t border-gray-200 bg-gray-50 animate-slideDown">
+                        <div class="mb-6" *ngIf="order.identifiedProblems && order.identifiedProblems.length > 0">
+                            <h4 class="font-medium text-gray-700 mb-3 flex items-center text-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Problemas Identificados
+                            </h4>
+                            <ul class="bg-white rounded-lg shadow-sm border border-gray-200 divide-y divide-gray-100">
+                                <li *ngFor="let problem of order.identifiedProblems" class="p-3 text-gray-700 flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                    {{ problem }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-6" *ngIf="order.services && order.services.length > 0">
+                            <h4 class="font-medium text-gray-700 mb-3 flex items-center text-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                Serviços Realizados
+                            </h4>
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-100">
+                                            <tr>
+                                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+                                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Horas</th>
+                                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Preço/Hora</th>
+                                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                                            <tr *ngFor="let service of order.services" class="hover:bg-gray-50">
+                                                <td class="px-4 py-3">{{ service.description }}</td>
+                                                <td class="px-4 py-3 text-right">{{ service.estimatedHours }}</td>
+                                                <td class="px-4 py-3 text-right">{{ service.pricePerHour | brazilianCurrency }}</td>
+                                                <td class="px-4 py-3 text-right font-medium">{{ service.totalPrice | brazilianCurrency }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="bg-blue-50">
+                                                <td colspan="3" class="px-4 py-3 font-medium text-right text-blue-700">Subtotal Serviços:</td>
+                                                <td class="px-4 py-3 text-right font-bold text-blue-700">
+                                                    {{ getServiceTotal(order.services) | brazilianCurrency }}
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6" *ngIf="order.requiredParts && order.requiredParts.length > 0">
+                            <h4 class="font-medium text-gray-700 mb-3 flex items-center text-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Peças Utilizadas
+                            </h4>
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-100">
+                                            <tr>
+                                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+                                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Preço Unit.</th>
+                                                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                                            <tr *ngFor="let part of order.requiredParts" class="hover:bg-gray-50">
+                                                <td class="px-4 py-3">{{ part.description }}</td>
+                                                <td class="px-4 py-3 text-right">{{ part.quantity }}</td>
+                                                <td class="px-4 py-3 text-right">{{ part.unitPrice | brazilianCurrency }}</td>
+                                                <td class="px-4 py-3 text-right font-medium">{{ part.totalPrice | brazilianCurrency }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="bg-green-50">
+                                                <td colspan="3" class="px-4 py-3 font-medium text-right text-green-700">Subtotal Peças:</td>
+                                                <td class="px-4 py-3 text-right font-bold text-green-700">
+                                                    {{ getPartsTotal(order.requiredParts) | brazilianCurrency }}
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-4 mt-6">
+                            <div class="bg-[#EC9253]/10 rounded-lg p-4 flex justify-between items-center">
+                                <span class="font-medium text-gray-700 text-lg">Total da Ordem de Serviço:</span>
+                                <span class="text-2xl font-bold text-[#EC9253]">{{ order.finalTotal | brazilianCurrency }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="vehicleHistory.history.length > 0" class="mt-6">
+            <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" [itemsPerPage]="itemsPerPage" [currentItemsCount]="paginatedHistory.length" [totalItems]="vehicleHistory.history.length" [itemsLabel]="'ordens'" (pageChange)="changePage($event)"> </app-pagination>
+        </div>
+    </div>
+
+    <div class="flex justify-end pt-4 border-t border-gray-200 mt-6">
+        <button type="button" (click)="closeModal()" class="inline-flex justify-center items-center px-6 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EC9253] transition duration-200">Fechar</button>
+    </div>
+</div>

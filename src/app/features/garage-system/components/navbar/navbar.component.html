@@ -1,0 +1,166 @@
+<div class="flex h-screen bg-[#F5F7FA]">
+    <!-- Header Mobile -->
+    <div class="fixed top-0 left-0 right-0 bg-white shadow-md z-40 h-16 md:hidden">
+        <div class="flex items-center justify-between h-full px-4">
+            <button (click)="toggleMobileMenu()" 
+                    class="p-2 rounded-lg transition-all duration-200"
+                    [ngClass]="{
+                        'text-gray-600 hover:text-[#EC9253] hover:bg-orange-50': !mobileMenuOpen,
+                        'text-[#EC9253] bg-orange-100': mobileMenuOpen
+                    }">
+                <svg *ngIf="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg *ngIf="mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </button>
+            
+            <h1 class="text-lg font-semibold text-gray-800">{{ breadcrumb }}</h1>
+            
+            <!-- Botão de perfil/fechar dinâmico -->
+            <button *ngIf="!mobileMenuOpen" 
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center transition-all duration-200">
+                <span class="text-white text-sm font-bold">{{ garageInfo?.name?.[0] || 'S' }}</span>
+            </button>
+            
+            <button *ngIf="mobileMenuOpen" 
+                    (click)="toggleMobileMenu()"
+                    class="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 shadow-lg"
+                    title="Fechar menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay para mobile -->
+    <div *ngIf="mobileMenuOpen" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" (click)="toggleMobileMenu()"></div>
+
+    <!-- Menu Lateral -->
+    <nav class="bg-gradient-to-b from-[#18181B] to-[#27272A] text-[#EEEEEE] fixed flex flex-col h-full shadow-xl transition-all duration-300 z-40 w-72"
+         [style.transform]="getMenuTransform()"
+         [style.display]="'flex'">
+        <div class="p-6 flex items-center">
+            <img src="assets/img/logo-white.png" alt="Smart Oficina Logo" class="h-14" />
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-3 mt-4">
+            <p class="text-xs uppercase text-gray-500 font-medium ml-3 mb-2">Menu Principal</p>
+            <ul class="flex flex-col gap-1">
+                <li *ngFor="let item of menuItems; trackBy: trackById" class="rounded-lg overflow-hidden transition-all duration-200">
+                    <div *ngIf="item.hasSubmenu" class="w-full">
+                        <a (click)="toggleSubmenu(item.label, $event)" class="flex items-center justify-between cursor-pointer hover:text-[#EC9253] text-base py-3 px-4 relative transition-all duration-200 hover:bg-white/5" [ngClass]="{ 'text-[#EC9253] font-medium bg-white/10': isSubmenuActive(item) }">
+                            <div class="flex items-center gap-3">
+                                <div *ngIf="isSubmenuActive(item)" class="absolute left-0 top-1/2 transform -translate-y-1/2 h-12 w-1 bg-[#EC9253] rounded-r-md"></div>
+
+                                <div class="w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200" [ngClass]="{ 'bg-gradient-to-br from-[#EC9253] to-[#f78839] shadow-md': isSubmenuActive(item), 'bg-white/5': !isSubmenuActive(item) }">
+                                    <img [src]="item.icon" alt="{{ item.label }} Icon" class="w-4 h-4 transition-transform duration-200" [ngClass]="{ 'scale-110': isSubmenuActive(item) }" />
+                                </div>
+
+                                <span class="transition-all duration-200" [ngClass]="{ 'translate-x-1': isSubmenuActive(item) }">
+                                    {{ item.label }}
+                                </span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-200" [ngClass]="{ 'rotate-180': expandedSubmenus[item.label] }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
+
+                        <div *ngIf="expandedSubmenus[item.label]" class="pl-6 flex flex-col gap-1 mt-1 mb-2 border-l border-gray-700/30 ml-4">
+                            <a *ngFor="let subItem of item.submenuItems" (click)="navigateTo(subItem.route)" class="flex items-center gap-3 cursor-pointer hover:text-[#EC9253] text-sm py-2 px-4 rounded-lg relative transition-all duration-200 hover:bg-white/5" [ngClass]="{ 'text-[#EC9253] font-medium bg-white/5': isSubmenuItemActive(subItem.route) }">
+                                <div class="w-5 h-5 flex items-center justify-center transition-all duration-200">
+                                    <img [src]="subItem.icon" alt="{{ subItem.label }} Icon" class="w-3 h-3 transition-transform duration-200" [ngClass]="{ 'scale-110': isSubmenuItemActive(subItem.route) }" />
+                                </div>
+                                <span class="transition-all duration-200" [ngClass]="{ 'translate-x-1': isSubmenuItemActive(subItem.route) }">
+                                    {{ subItem.label }}
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <a *ngIf="!item.hasSubmenu" (click)="navigateTo(item.route)" class="flex items-center gap-3 cursor-pointer hover:text-[#EC9253] text-base py-3 px-4 relative transition-all duration-200 hover:bg-white/5" [ngClass]="{ 'text-[#EC9253] font-medium bg-white/10': isActive(item.route) }">
+                        <div *ngIf="isActive(item.route)" class="absolute left-0 top-1/2 transform -translate-y-1/2 h-12 w-1 bg-[#EC9253] rounded-r-md"></div>
+
+                        <div class="w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200" [ngClass]="{ 'bg-gradient-to-br from-[#EC9253] to-[#f78839] shadow-md': isActive(item.route), 'bg-white/5': !isActive(item.route) }">
+                            <img [src]="item.icon" alt="{{ item.label }} Icon" class="w-4 h-4 transition-transform duration-200" [ngClass]="{ 'scale-110': isActive(item.route) }" />
+                        </div>
+
+                        <span class="transition-all duration-200" [ngClass]="{ 'translate-x-1': isActive(item.route) }">
+                            {{ item.label }}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mt-auto w-full">
+            <div class="px-3 mt-2">
+                <p class="text-xs uppercase text-gray-500 font-medium ml-3 mb-2">Configurações</p>
+                <ul class="flex flex-col gap-1">
+                    <li class="rounded-lg overflow-hidden transition-all duration-200" [ngClass]="{ 'bg-white/10': isActive('settings') }">
+                        <a (click)="navigateTo('settings')" class="flex items-center gap-3 cursor-pointer hover:text-[#EC9253] text-base py-3 px-4 relative transition-all duration-200 hover:bg-white/5" [ngClass]="{ 'text-[#EC9253] font-medium': isActive('settings') }">
+                            <div *ngIf="isActive('settings')" class="absolute left-0 top-1/2 transform -translate-y-1/2 h-12 w-1 bg-[#EC9253] rounded-r-md"></div>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200" [ngClass]="{ 'bg-gradient-to-br from-[#EC9253] to-[#f78839] shadow-md': isActive('settings'), 'bg-white/5': !isActive('settings') }">
+                                <img
+                                    src="../../../../assets/icons/gear-solid.svg"
+                                    alt="Configurações Icon"
+                                    class="w-4 h-4 transition-transform duration-200"
+                                    [ngClass]="{
+                                        'scale-110': isActive('settings'),
+                                        'invert brightness-0 saturate-100': isActive('settings')
+                                    }" />
+                            </div>
+                            <span class="transition-all duration-200" [ngClass]="{ 'translate-x-1': isActive('settings') }">Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mx-6 h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent my-4 opacity-50"></div>
+            <div class="mx-4 mb-4 bg-black/20 backdrop-blur-sm rounded-xl p-4 shadow-inner">
+                <div class="flex flex-col">
+                    <h2 class="text-base font-semibold truncate">{{ garageInfo?.name || "Nome da Oficina" }}</h2>
+                    <div class="relative group mb-3">
+                        <p class="text-xs text-gray-400 truncate">{{ garageInfo?.email || "email@exemplo.com" }}</p>
+                        <div class="absolute left-0 -top-8 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                            {{ garageInfo?.email || "email@exemplo.com" }}
+                            <div class="absolute left-2 top-full w-2 h-2 bg-gray-800 transform rotate-45"></div>
+                        </div>
+                    </div>
+
+                    <button (click)="logout()" class="w-full text-xs px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-all duration-200 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sair do Sistema
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 transition-all duration-300" 
+         [ngClass]="{ 
+           'ml-0 pt-16 md:ml-72 md:pt-6': isMobileView, 
+           'ml-72 pt-6': !isMobileView 
+         }">
+        <div class="p-6">
+
+            <!-- Breadcrumb apenas no desktop -->
+            <div *ngIf="!isMobileView" class="mb-6 flex items-center text-sm text-gray-500">
+                <a href="#" class="hover:text-[#EC9253] transition-colors duration-200">Início</a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                <span class="font-medium text-gray-700">{{ breadcrumb }}</span>
+            </div>
+
+            <div class="animate-fadeIn">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

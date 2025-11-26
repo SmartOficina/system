@@ -1,0 +1,50 @@
+<div class="access-denied-container p-6 bg-orange-50 border border-orange-200 rounded-xl shadow-md mb-6 animate-fadeIn" [ngClass]="{ 'border-l-4': true, 'border-l-yellow-500': hasExpiredSubscription, 'border-l-orange-500': !hasExpiredSubscription }">
+    <div class="flex flex-col md:flex-row items-center">
+        <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+            <div class="p-4 rounded-full" [ngClass]="{ 'bg-yellow-100': hasExpiredSubscription, 'bg-orange-100': !hasExpiredSubscription }">
+                <svg *ngIf="!hasExpiredSubscription" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <svg *ngIf="hasExpiredSubscription" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+        </div>
+        <div class="flex-1 text-center md:text-left">
+            <h3 *ngIf="!hasExpiredSubscription && !hasNeverSubscribed" class="text-xl font-bold text-gray-800 mb-2">🔒 Essa funcionalidade está bloqueada</h3>
+            <h3 *ngIf="hasNeverSubscribed" class="text-xl font-bold text-gray-800 mb-2">🚀 Desbloqueie todas as funcionalidades</h3>
+            <h3 *ngIf="hasExpiredSubscription" class="text-xl font-bold text-yellow-700 mb-2">
+                ⏰ Sua assinatura <span class="font-extrabold text-yellow-600">{{ subscriptionInfo?.plan?.name }}</span> está vencida!
+            </h3>
+
+            <p *ngIf="!hasExpiredSubscription && !hasNeverSubscribed" class="text-gray-600 mb-3">{{ planReferenceText }}.</p>
+            <p *ngIf="hasNeverSubscribed" class="text-gray-600 mb-3">Você ainda não tem uma assinatura ativa. Assine agora e aproveite todas as funcionalidades do sistema!</p>
+
+            <p *ngIf="hasExpiredSubscription" class="text-gray-600 mb-3">
+                Seu plano <span class="font-semibold text-yellow-700">{{ subscriptionInfo?.plan?.name }}</span> venceu em {{ formatDate(subscriptionInfo?.subscription?.endDate) }}. Renove sua assinatura para continuar aproveitando todos os benefícios!
+            </p>
+
+            <div class="flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0 justify-center md:justify-start">
+                <button (click)="onUpgradePlan()" class="px-4 py-2 rounded-lg transition-all duration-200 shadow hover:shadow-md transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-opacity-50 flex items-center justify-center text-white font-medium" [ngClass]="{ 'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-500': hasExpiredSubscription, 'bg-[#EC9253] hover:bg-[#f78839] focus:ring-[#EC9253]': !hasExpiredSubscription }">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                    {{ ctaButtonText }}
+                </button>
+                <button (click)="onMoreInfo()" class="border px-4 py-2 rounded-lg hover:text-white transition-all duration-200 flex items-center justify-center" [ngClass]="{ 'border-yellow-500 text-yellow-600 hover:bg-yellow-500': hasExpiredSubscription, 'border-[#EC9253] text-[#EC9253] hover:bg-[#EC9253]': !hasExpiredSubscription }">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Mais informações
+                </button>
+            </div>
+
+            <div *ngIf="hasExpiredSubscription" class="mt-3 text-xs text-gray-500 flex items-center justify-center md:justify-start" style="margin-top: 15px">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Renove agora para não perder seus dados e configurações!</span>
+            </div>
+        </div>
+    </div>
+</div>

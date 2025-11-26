@@ -1,0 +1,155 @@
+.modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 4rem);
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.modal-content {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 350px;
+    margin-bottom: 1.5rem;
+    padding-top: 0.5rem;
+}
+
+:host ::ng-deep app-input-generic input,
+:host ::ng-deep app-input-generic textarea {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus,
+:host ::ng-deep app-input-generic textarea:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px rgba(236, 146, 83, 0.2);
+}
+
+:host ::ng-deep app-input-generic input[readonly],
+:host ::ng-deep app-input-generic textarea[readonly] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+button {
+    transition: all 0.2s ease;
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+@media (max-height: 800px) {
+    .modal-content {
+        max-height: calc(100vh - 300px);
+    }
+}
+
+@media (max-height: 600px) {
+    .modal-content {
+        max-height: calc(100vh - 250px);
+    }
+}
+
+.modal-buttons-container {
+    padding-bottom: 1.5rem;
+}
+
+.status-timeline {
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: #f9fafb;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    min-height: 200px;
+}
+
+button.share-button {
+    background-color: #6366F1;
+    color: white;
+}
+
+button.share-button:hover {
+    background-color: #4F46E5;
+}
+
+.status-aberta {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.status-em_diagnostico {
+    background-color: #EDE9FE;
+    color: #5B21B6;
+}
+
+.status-aguardando_aprovacao {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.status-aprovada {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.status-rejeitada {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+}
+
+.status-em_andamento {
+    background-color: #E0E7FF;
+    color: #3730A3;
+}
+
+.status-aguardando_pecas {
+    background-color: #FFEDD5;
+    color: #9A3412;
+}
+
+.status-concluida {
+    background-color: #A7F3D0;
+    color: #065F46;
+}
+
+.status-entregue {
+    background-color: #CCFBF1;
+    color: #0F766E;
+}
+
+.status-cancelada {
+    background-color: #F3F4F6;
+    color: #4B5563;
+}

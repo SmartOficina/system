@@ -1,0 +1,279 @@
+<div class="flex flex-col p-3 md:p-6 animate-fadeIn">
+    <div class="mb-4 md:mb-6">
+        <h1 class="text-xl md:text-2xl font-bold mb-1 text-gray-800 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-7 md:w-7 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Estoque - Visão Geral
+        </h1>
+        <p class="text-gray-500 text-sm md:text-base mb-4">Dashboard completo do estoque com ações rápidas</p>
+    </div>
+
+    <app-permission-guard [showAccessDenied]="!permissions.view" [requiredPermission]="'inventory:view'"></app-permission-guard>
+
+    <!-- Cards de estatísticas responsivos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs md:text-sm font-medium">Total de Peças</p>
+                    <p class="text-xl md:text-2xl font-bold text-gray-800">{{ parts.length }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Cadastradas no sistema</p>
+                </div>
+                <div class="p-2 md:p-3 rounded-full bg-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs md:text-sm font-medium">Valor Total em Estoque</p>
+                    <p class="text-xl md:text-2xl font-bold text-gray-800">{{ formatCurrency(getTotalStockValue()) }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Baseado no custo médio</p>
+                </div>
+                <div class="p-2 md:p-3 rounded-full bg-green-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-red-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-xs md:text-sm font-medium">Estoque Baixo</p>
+                    <p class="text-xl md:text-2xl font-bold text-gray-800">{{ getLowStockCount() }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Abaixo do mínimo</p>
+                </div>
+                <div class="p-2 md:p-3 rounded-full bg-red-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Painel de ações rápidas responsivo -->
+    <div class="bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6">
+        <h2 class="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Ações Rápidas
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            <button (click)="openCreatePartModal()" class="flex flex-col items-center p-3 md:p-4 border-2 border-dashed border-blue-300 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition-all duration-200 group">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2 md:mb-3 group-hover:bg-blue-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-gray-700 group-hover:text-blue-700 text-center">Cadastrar Peça</span>
+                <span class="text-xs text-gray-500 mt-1 text-center hidden md:block">Nova peça no estoque</span>
+            </button>
+
+            <button (click)="openCreateSupplierModal()" class="flex flex-col items-center p-3 md:p-4 border-2 border-dashed border-green-300 rounded-lg hover:bg-green-50 hover:border-green-400 transition-all duration-200 group">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center mb-2 md:mb-3 group-hover:bg-green-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-gray-700 group-hover:text-green-700 text-center">Cadastrar Fornecedor</span>
+                <span class="text-xs text-gray-500 mt-1 text-center hidden md:block">Novo fornecedor</span>
+            </button>
+
+            <button (click)="openCreateEntryModal()" class="flex flex-col items-center p-3 md:p-4 border-2 border-dashed border-orange-300 rounded-lg hover:bg-orange-50 hover:border-orange-400 transition-all duration-200 group">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-full flex items-center justify-center mb-2 md:mb-3 group-hover:bg-orange-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                    </svg>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-gray-700 group-hover:text-orange-700 text-center">Entrada de Estoque</span>
+                <span class="text-xs text-gray-500 mt-1 text-center hidden md:block">Registrar entrada</span>
+            </button>
+
+            <button (click)="openCreateExitModal()" class="flex flex-col items-center p-3 md:p-4 border-2 border-dashed border-red-300 rounded-lg hover:bg-red-50 hover:border-red-400 transition-all duration-200 group">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-red-100 rounded-full flex items-center justify-center mb-2 md:mb-3 group-hover:bg-red-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-gray-700 group-hover:text-red-700 text-center">Saída de Estoque</span>
+                <span class="text-xs text-gray-500 mt-1 text-center hidden md:block">Registrar saída</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-3 md:p-4 mb-4 md:mb-6">
+        <!-- Campo de busca -->
+        <div class="mb-4">
+            <app-input-generic type="text" label="Pesquisar itens" [required]="false" [(value)]="search" (keyupEvent)="onSearchKeyup()" class="h-12" placeholder="Código, nome, unidade..."> </app-input-generic>
+        </div>
+
+        <!-- Filtros -->
+        <div class="pt-4 border-t border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Status do estoque</label>
+                    <select [(ngModel)]="filterStockStatus" (change)="applyFilters()" class="w-full px-3 py-3 md:py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#EC9253] focus:border-[#EC9253]">
+                        <option value="all">Todos os itens</option>
+                        <option value="available">Com estoque</option>
+                        <option value="low">Estoque baixo</option>
+                        <option value="out">Sem estoque</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button (click)="clearFilters()" class="w-full px-3 py-3 md:py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#EC9253] flex items-center justify-center" title="Limpar todos os filtros aplicados">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span class="hidden md:inline">Limpar filtros</span>
+                        <span class="md:hidden">Limpar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles superiores -->
+    <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row md:justify-between md:items-center mb-4">
+        <!-- Última atualização -->
+        <div class="text-sm md:text-base text-gray-500 order-2 md:order-1 mt-4 md:mt-0">
+            <div class="flex items-center justify-between">
+                <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Atualizado às: {{ lastUpdate | date : "HH:mm" }}
+                </span>
+                <button (click)="refreshData()" class="text-[#EC9253] hover:text-[#f78839] p-2 rounded-full hover:bg-orange-50 transition-colors flex items-center justify-center" title="Atualizar dados do estoque">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Controles -->
+        <div class="grid grid-cols-2 md:flex md:items-center gap-2 md:gap-4 order-1 md:order-2">
+            <!-- Ordenação -->
+            <div class="flex flex-col md:flex-row md:items-center md:space-x-2">
+                <label for="sortSelect" class="text-xs md:text-sm text-gray-600 mb-1 md:mb-0">Ordenar:</label>
+                <select id="sortSelect" [(ngModel)]="sortOrder" (change)="changeSortOrder()" class="border border-gray-300 rounded-md text-xs md:text-sm py-2 md:py-1 px-2 focus:outline-none focus:ring-2 focus:ring-[#EC9253] focus:border-[#EC9253]">
+                    <option value="name">Nome (A-Z)</option>
+                    <option value="name_desc">Nome (Z-A)</option>
+                    <option value="stock_asc">Estoque (menor)</option>
+                    <option value="stock_desc">Estoque (maior)</option>
+                </select>
+            </div>
+            
+            <!-- Itens por página -->
+            <div class="flex flex-col md:flex-row md:items-center md:space-x-2">
+                <label for="limitSelect" class="text-xs md:text-sm text-gray-600 mb-1 md:mb-0">Por página:</label>
+                <select id="limitSelect" [(ngModel)]="limit" (change)="changeLimit()" class="border border-gray-300 rounded-md text-xs md:text-sm py-2 md:py-1 px-2 focus:outline-none focus:ring-2 focus:ring-[#EC9253] focus:border-[#EC9253]">
+                    <option *ngFor="let option of limitOptions" [value]="option">{{ option }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop: Tabela tradicional -->
+    <div class="hidden md:block bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <app-generic-table [data]="parts" [columns]="stockColumns" [isLoading]="isLoading" [itemsPerPage]="limit"> </app-generic-table>
+    </div>
+
+    <!-- Mobile: Cards responsivos -->
+    <div class="md:hidden space-y-3 mb-6">
+        <!-- Loading skeleton para mobile -->
+        <div *ngIf="isLoading" class="space-y-3">
+            <div *ngFor="let item of [1,2,3,4,5]" class="bg-white rounded-lg shadow-md p-4 animate-pulse">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+                    <div class="h-4 bg-gray-200 rounded w-16"></div>
+                </div>
+                <div class="space-y-2">
+                    <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cards de itens do estoque -->
+        <div *ngIf="!isLoading && parts.length > 0" class="space-y-3">
+            <div *ngFor="let part of parts" class="bg-white rounded-lg shadow-md p-4 border border-gray-100">
+                
+                <!-- Header do card -->
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-gray-800 text-lg">{{ part.name }}</h3>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          [class]="(part.currentStock || 0) < (part.minimumStock || 0) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'">
+                        {{ (part.currentStock || 0) < (part.minimumStock || 0) ? 'Estoque Baixo' : 'Normal' }}
+                    </span>
+                </div>
+                
+                <!-- Informações principais -->
+                <div class="space-y-2 mb-4">
+                    <div *ngIf="part.code" class="flex items-center text-sm text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                        </svg>
+                        <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">
+                            {{ part.code }}
+                        </span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                            <span class="font-medium" [class]="(part.currentStock || 0) < (part.minimumStock || 0) ? 'text-red-600' : 'text-gray-800'">{{ part.currentStock || 0 }}</span>
+                            <span class="text-gray-500 mx-1">/</span>
+                            <span class="text-gray-500">{{ part.minimumStock || 0 }} {{ part.unit || '' }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                            </svg>
+                            <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium mr-2">
+                                Custo: {{ formatCurrency(part.averageCost || 0) }}
+                            </span>
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">
+                                Total: {{ formatCurrency(part.stockValue || 0) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estado vazio -->
+        <div *ngIf="!isLoading && parts.length === 0" class="bg-white rounded-lg shadow-md p-8 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">Nenhum item encontrado</h3>
+            <p class="text-gray-500 mb-4">Comece cadastrando suas primeiras peças</p>
+            <button (click)="openCreatePartModal()" class="bg-[#EC9253] text-white px-4 py-2 rounded-lg hover:bg-[#f78839] transition-colors">
+                Cadastrar Peça
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="search || filterStockStatus !== 'all'" class="text-sm text-gray-500 italic mb-2">
+        <span *ngIf="search">Filtrando por texto: "{{ search }}"</span>
+        <span *ngIf="search && filterStockStatus !== 'all'"> | </span>
+        <span *ngIf="filterStockStatus !== 'all'">Status: {{ getFilterStockStatusLabel() }}</span>
+    </div>
+
+    <app-pagination [currentPage]="page" [totalPages]="totalPages" [itemsPerPage]="limit" [currentItemsCount]="parts.length" [totalItems]="totalParts" [itemsLabel]="'itens'" (pageChange)="changePage($event)"> </app-pagination>
+</div>

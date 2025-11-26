@@ -1,0 +1,68 @@
+.opening-container {
+    padding-bottom: 1rem;
+}
+
+:host ::ng-deep app-input-generic input,
+:host ::ng-deep app-input-generic textarea {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus,
+:host ::ng-deep app-input-generic textarea:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px rgba(236, 146, 83, 0.3);
+}
+
+:host ::ng-deep app-input-generic input[readonly],
+:host ::ng-deep app-input-generic textarea[readonly] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    height: 0.5rem;
+    border-radius: 0.25rem;
+    background: #e5e7eb;
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #EC9253;
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #EC9253;
+    cursor: pointer;
+    border: none;
+}
+
+input[type=checkbox] {
+    border-radius: 0.25rem;
+    border-color: #d1d5db;
+}
+
+input[type=checkbox]:checked {
+    background-color: #EC9253;
+    border-color: #EC9253;
+}
+
+input[type=checkbox]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 146, 83, 0.3);
+}

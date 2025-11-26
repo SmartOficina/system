@@ -1,0 +1,39 @@
+.shadow-hover {
+    transition: box-shadow var(--transition-normal);
+
+    &:hover {
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+.opacity-hover {
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.mt-responsive {
+    margin-top: clamp(1rem, 3vw, 3rem);
+}
+
+.mb-responsive {
+    margin-bottom: clamp(1rem, 3vw, 3rem);
+}
+
+.py-responsive {
+    padding-top: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(1rem, 3vw, 3rem);
+}
+
+.px-responsive {
+    padding-left: clamp(1rem, 3vw, 3rem);
+    padding-right: clamp(1rem, 3vw, 3rem);
+}
+
+.flex-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}

@@ -1,0 +1,22 @@
+.actions-column {
+  min-width: 140px;
+}
+
+::ng-deep ngx-skeleton-loader {
+  .skeleton-loader {
+    opacity: 0.7;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

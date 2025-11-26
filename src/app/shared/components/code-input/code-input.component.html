@@ -1,0 +1,29 @@
+<div class="flex flex-col items-center text-center">
+    <h2 class="text-2xl font-bold text-[#42130F] mb-2">{{ title }}</h2>
+    <p class="text-lg text-gray-700 mb-4">{{ description }}</p>
+    <div class="number-code mb-4">
+        <div class="flex space-x-2">
+            <input #codeInput id="digit1" class="code-input" maxlength="1" type="text" (input)="onInput($event, 0)" (keydown)="onKeyDown($event, 0)" (paste)="onPaste($event)" />
+            <input #codeInput id="digit2" class="code-input" maxlength="1" type="text" (input)="onInput($event, 1)" (keydown)="onKeyDown($event, 1)" (paste)="onPaste($event)" />
+            <input #codeInput id="digit3" class="code-input" maxlength="1" type="text" (input)="onInput($event, 2)" (keydown)="onKeyDown($event, 2)" (paste)="onPaste($event)" />
+            <input #codeInput id="digit4" class="code-input" maxlength="1" type="text" (input)="onInput($event, 3)" (keydown)="onKeyDown($event, 3)" (paste)="onPaste($event)" />
+            <input #codeInput id="digit5" class="code-input" maxlength="1" type="text" (input)="onInput($event, 4)" (keydown)="onKeyDown($event, 4)" (paste)="onPaste($event)" />
+            <input #codeInput id="digit6" class="code-input" maxlength="1" type="text" (input)="onInput($event, 5)" (keydown)="onKeyDown($event, 5)" (paste)="onPaste($event)" />
+        </div>
+    </div>
+    <div *ngIf="isVerifying" class="text-sm text-gray-500 mb-2">Verificando código...</div>
+    <div class="text-center mt-6">
+        <p class="text-sm text-gray-600">
+            Não recebeu o código?
+            <button class="text-[#EC9253] font-medium hover:underline" [disabled]="resendCooldown > 0 || isResending" (click)="resendCode()">
+                <ng-container *ngIf="!isResending && resendCooldown === 0">Reenviar Código</ng-container>
+                <ng-container *ngIf="isResending">Enviando...</ng-container>
+            </button>
+        </p>
+        <div class="text-sm text-green-600 mt-2" *ngIf="resendMessage">{{ resendMessage }}</div>
+        <div class="text-sm text-red-600 mt-2" *ngIf="resendError">{{ resendError }}</div>
+        <p *ngIf="resendCooldown > 0" class="text-sm text-gray-500 mt-2">
+            Aguarde {{ resendCooldown }} segundos para reenviar um novo código.
+        </p>
+    </div>
+</div>

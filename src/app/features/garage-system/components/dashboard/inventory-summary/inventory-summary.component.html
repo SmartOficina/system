@@ -1,0 +1,54 @@
+<div class="inventory-summary bg-white rounded-lg shadow-sm p-4 md:p-6 border border-gray-200">
+  <h3 class="text-base md:text-lg font-semibold mb-3 md:mb-4 text-gray-800 flex items-center">
+    <i class="fas fa-boxes text-[#EC9253] mr-2"></i>
+    Resumo do Estoque
+  </h3>
+  
+  <div *ngIf="loading" class="animate-pulse">
+    <div class="space-y-3">
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && data" class="space-y-3 md:space-y-4">
+    <div class="grid grid-cols-2 gap-3 md:gap-4">
+      <div class="text-center p-2 md:p-3 bg-orange-50 rounded-lg">
+        <div class="text-lg md:text-2xl font-bold text-[#EC9253]">{{ data.totalItems }}</div>
+        <div class="text-xs md:text-sm text-gray-600">Total de Itens</div>
+      </div>
+      <div class="text-center p-2 md:p-3 bg-orange-50 rounded-lg">
+        <div class="text-lg md:text-2xl font-bold text-[#EC9253] truncate">{{ data.totalValue | currency:'BRL':'symbol':'1.2-2':'pt' }}</div>
+        <div class="text-xs md:text-sm text-gray-600">Valor Total</div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+      <span class="text-xs md:text-sm text-gray-600">Estoque Baixo</span>
+      <span class="text-xs md:text-sm font-medium" [ngClass]="data.lowStockItems > 0 ? 'text-yellow-600' : 'text-green-600'">
+        {{ data.lowStockItems }} itens
+      </span>
+    </div>
+
+    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+      <span class="text-xs md:text-sm text-gray-600">Sem Estoque</span>
+      <span class="text-xs md:text-sm font-medium" [ngClass]="data.outOfStockItems > 0 ? 'text-red-600' : 'text-green-600'">
+        {{ data.outOfStockItems }} itens
+      </span>
+    </div>
+
+    <div class="pt-2 md:pt-3">
+      <button 
+        [routerLink]="['/garage-system/inventory']"
+        class="w-full px-3 py-2 text-xs md:text-sm bg-[#EC9253] text-white rounded-md hover:bg-[#f78839] transition-colors">
+        Ver Estoque Completo
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !data" class="text-center py-8">
+    <i class="fas fa-box-open text-gray-400 text-3xl mb-3"></i>
+    <p class="text-gray-500">Dados de estoque não disponíveis</p>
+  </div>
+</div>

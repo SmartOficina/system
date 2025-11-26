@@ -1,0 +1,83 @@
+<div class="schedule-container bg-white rounded-lg shadow-sm p-4 md:p-6 border border-gray-200">
+  <h3 class="text-base md:text-lg font-semibold mb-3 md:mb-4 text-gray-800 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+    <span class="flex items-center">
+      <i class="fas fa-calendar-day text-blue-500 mr-2"></i>
+      Agenda de Hoje
+    </span>
+    <span class="text-xs md:text-sm font-normal text-gray-500">
+      {{ getCurrentDate() }}
+    </span>
+  </h3>
+  
+  <div *ngIf="loading" class="space-y-3">
+    <div *ngFor="let item of [1,2,3]" class="animate-pulse">
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 bg-gray-200 rounded-lg"></div>
+        <div class="flex-1">
+          <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && (!events || events.length === 0)" class="text-center py-8">
+    <i class="fas fa-calendar-check text-green-500 text-3xl mb-3"></i>
+    <p class="text-gray-500">Nenhum agendamento para hoje</p>
+    <p class="text-sm text-gray-400">Agenda livre!</p>
+    <button 
+      routerLink="/system/schedule"
+      class="mt-3 px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+      Criar Agendamento
+    </button>
+  </div>
+
+  <div *ngIf="!loading && events && events.length > 0" class="space-y-2 md:space-y-3 max-h-80 md:max-h-96 overflow-y-auto">
+    <div 
+      *ngFor="let event of events; trackBy: trackByEvent" 
+      class="schedule-item flex items-center space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition-all hover:shadow-sm">
+      
+      <div class="time-badge flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-xs md:text-sm font-medium"
+           [ngClass]="getTimeBadgeClasses(event.status)">
+        {{ formatTime(event.time) }}
+      </div>
+      
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-col md:flex-row md:items-center md:space-x-2 mb-1 gap-1 md:gap-0">
+          <h4 class="font-medium text-gray-800 truncate text-sm md:text-base">{{ event.title }}</h4>
+          <span class="px-2 py-1 text-xs rounded-full font-medium self-start"
+                [ngClass]="getServiceTagClasses(event.serviceTag)">
+            {{ event.serviceTag }}
+          </span>
+        </div>
+        
+        <div class="text-xs md:text-sm text-gray-600 space-y-1">
+          <p *ngIf="event.clientName" class="flex items-center">
+            <i class="fas fa-user text-gray-400 mr-1 w-3"></i>
+            <span class="truncate">{{ event.clientName }}</span>
+          </p>
+          <p *ngIf="event.vehiclePlate" class="flex items-center">
+            <i class="fas fa-car text-gray-400 mr-1 w-3"></i>
+            <span class="truncate">{{ event.vehiclePlate }}</span>
+          </p>
+        </div>
+      </div>
+      
+      <div class="status-indicator flex-shrink-0">
+        <span class="px-1 md:px-2 py-1 text-xs rounded-full font-medium"
+              [ngClass]="getStatusClasses(event.status)">
+          <span class="hidden md:inline">{{ getStatusLabel(event.status) }}</span>
+          <span class="md:hidden">{{ getStatusLabel(event.status).charAt(0) }}</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && events && events.length > 5" class="mt-4 pt-4 border-t border-gray-200">
+    <button 
+      routerLink="/system/schedule"
+      class="text-sm text-primary hover:text-primary-dark font-medium">
+      Ver agenda completa ({{ events.length }} agendamentos)
+    </button>
+  </div>
+</div>

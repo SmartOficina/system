@@ -1,0 +1,65 @@
+:host ::ng-deep app-input-generic input {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: none;
+    outline: none;
+}
+
+:host ::ng-deep app-input-generic input:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+}
+
+:host ::ng-deep app-input-generic input[readonly] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+select {
+    width: 100%;
+    height: 3rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25rem;
+}
+
+select:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+    outline: none;
+}
+
+select[disabled] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+textarea {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    resize: vertical;
+    min-height: 5rem;
+}
+
+textarea:focus {
+    border-color: #EC9253;
+    box-shadow: 0 0 0 2px #f7883991;
+    outline: none;
+}
+
+textarea[readonly] {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+}

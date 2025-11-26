@@ -1,0 +1,28 @@
+<div class="pagination-wrapper">
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span>Exibindo {{ getFirstItemIndex() }} - {{ getLastItemIndex() }} de {{ totalItems }} {{ itemsLabel }}</span>
+        </div>
+        <div class="pagination">
+            <a href="javascript:void(0)" class="page-control" [ngClass]="{ disabled: currentPage === 1 }" title="Primeira Página" (click)="setPage(1)">
+                <img src="assets/icons/angles-left-solid.svg" alt="Primeira página" class="icon-svg" />
+            </a>
+
+            <a href="javascript:void(0)" class="page-control" [ngClass]="{ disabled: currentPage === 1 }" title="Página Anterior" (click)="setPage(currentPage - 1)">
+                <img src="assets/icons/angle-left-solid.svg" alt="Página anterior" class="icon-svg" />
+            </a>
+
+            <div class="page-numbers">
+                <a href="javascript:void(0)" *ngFor="let page of pages" class="page-number" [ngClass]="{ active: currentPage === page }" (click)="setPage(page)">{{ page }}</a>
+            </div>
+
+            <a href="javascript:void(0)" class="page-control" [ngClass]="{ disabled: currentPage === totalPages }" title="Próxima Página" (click)="setPage(currentPage + 1)">
+                <img src="assets/icons/angle-right-solid.svg" alt="Próxima página" class="icon-svg" />
+            </a>
+
+            <a href="javascript:void(0)" class="page-control" [ngClass]="{ disabled: currentPage === totalPages }" title="Última Página" (click)="setPage(totalPages)">
+                <img src="assets/icons/angles-right-solid.svg" alt="Última página" class="icon-svg" />
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,751 @@
+<div class="flex flex-col p-6 animate-fadeIn">
+    <nav class="mb-4" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+            <li>
+                <a href="/system/clients" class="hover:text-[#EC9253] transition-colors">Clientes</a>
+            </li>
+            <li>
+                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            <li class="text-gray-800 font-medium" aria-current="page">Configurações</li>
+        </ol>
+    </nav>
+
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold mb-1 text-gray-800 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Configurações
+        </h1>
+        <p class="text-gray-500 mb-4">Gerencie as configurações da sua oficina</p>
+        
+    </div>
+    <app-access-denied *ngIf="!canViewSettings" [requiredPermission]="'settings:view'" (upgradePlan)="handleUpgradePlan()" (moreInfo)="handleMoreInfo()"> </app-access-denied>
+
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="border-b border-gray-200 bg-gray-50">
+            <div class="container mx-auto">
+                <ul class="flex flex-wrap overflow-x-auto md:overflow-visible -mb-px text-sm font-medium text-center scrollbar-hide">
+                    <li class="flex-shrink-0 mr-2" *ngFor="let tab of tabs; let i = index">
+                        <a (click)="selectTab(i)" class="cursor-pointer inline-flex items-center justify-center p-3 md:p-4 border-b-2 rounded-t-lg group whitespace-nowrap" [class.text-[#EC9253]]="activeTabIndex === i" [class.border-[#EC9253]]="activeTabIndex === i" [class.text-gray-500]="activeTabIndex !== i" [class.border-transparent]="activeTabIndex !== i" [class.hover:text-gray-600]="activeTabIndex !== i" [class.hover:border-gray-300]="activeTabIndex !== i">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" [class]="activeTabIndex === i ? 'text-[#EC9253]' : 'text-gray-400 group-hover:text-gray-500'">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="tab.icon" />
+                            </svg>
+                            <span class="hidden sm:inline">{{ tab.label }}</span>
+                            <span class="sm:hidden text-xs">{{ tab.label.split(' ')[0] }}</span>
+                            <span *ngIf="tab.loading" class="ml-2">
+                                <svg class="animate-spin h-3 w-3 md:h-4 md:w-4 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="p-4 md:p-6">
+            <div *ngIf="isLoading" class="flex justify-center items-center py-10">
+                <div class="loader-spinner">
+                    <svg class="animate-spin h-10 w-10 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="mt-3 text-gray-600">Carregando...</p>
+                </div>
+            </div>
+
+            <div *ngIf="activeTabIndex === 0 && !isLoading" class="animate-fadeIn">
+                <div *ngIf="tabs[0].loading" class="flex justify-center items-center py-10">
+                    <div class="loader-spinner">
+                        <svg class="animate-spin h-10 w-10 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-3 text-gray-600">Carregando informações da oficina...</p>
+                    </div>
+                </div>
+
+                <div *ngIf="hasUnsavedChanges" class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <div class="flex-1">
+                        <span class="text-yellow-800 text-sm font-medium">Você tem alterações não salvas</span>
+                        <p class="text-yellow-700 text-xs mt-1">Lembre-se de salvar suas alterações antes de sair da página.</p>
+                    </div>
+                    <button 
+                        (click)="saveGarageInfo()" 
+                        [disabled]="!hasChanges()"
+                        class="ml-3 px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700 transition-colors disabled:opacity-50">
+                        Salvar Agora
+                    </button>
+                </div>
+
+                <div *ngIf="!tabs[0].loading" class="flex flex-col lg:flex-row gap-4 lg:gap-6">
+                    <div class="w-full lg:w-2/3">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-800">Informações da Oficina</h2>
+                                <p class="text-sm text-gray-500 mt-1">Gerencie os dados principais da sua oficina</p>
+                            </div>
+                        </div>
+
+                        <div *ngIf="!isEditing" class="bg-gray-50 rounded-lg p-4 md:p-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">Nome da Oficina</div>
+                                    <div class="font-medium">{{ garageInfo.name || "Não informado" }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">CNPJ/CPF</div>
+                                    <div class="font-medium">{{ garageInfo.cnpjCpf || "Não informado" }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">Celular</div>
+                                    <div class="font-medium">{{ garageInfo.phone || "Não informado" }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">E-mail</div>
+                                    <div class="font-medium">{{ garageInfo.email || "Não informado" }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">Data de Cadastro</div>
+                                    <div class="font-medium">
+                                        {{ garageInfo.createdAt ? (garageInfo.createdAt | date : "dd/MM/yyyy") : "Não informado" }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 mb-1">CEP</div>
+                                    <div class="font-medium">{{ garageInfo.address?.zipCode || "Não informado" }}</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="text-sm text-gray-500 mb-1">Endereço</div>
+                                <div class="text-sm" *ngIf="garageInfo.address">
+                                    <p class="font-medium">{{ garageInfo.address.street || "" }}, {{ garageInfo.address.number || "" }}</p>
+                                    <p class="font-medium">{{ garageInfo.address.district || "" }}</p>
+                                    <p class="font-medium">{{ garageInfo.address.city || "" }} - {{ garageInfo.address.state || "" }}</p>
+                                </div>
+                                <div class="text-sm font-medium" *ngIf="!garageInfo.address">Não informado</div>
+
+                                <div class="mt-4">
+                                    <button 
+                                        (click)="toggleEdit()" 
+                                        class="text-[#EC9253] hover:text-[#f78839] font-medium flex items-center transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#EC9253] focus:ring-opacity-50 rounded px-2 py-1"
+                                        title="Editar as informações da oficina"
+                                        aria-label="Editar informações da oficina">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        Editar informações
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="isEditing" class="bg-gray-50 rounded-lg p-4 md:p-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <app-input-generic label="Nome da Oficina" [required]="true" [(value)]="editForm.name" placeholder="Nome da sua oficina"> </app-input-generic>
+
+                                <app-input-generic label="CNPJ/CPF" type="cnpjCpf" [required]="true" [(value)]="editForm.cnpjCpf" placeholder="000.000.000-00" [readonly]="true"> </app-input-generic>
+
+                                <app-input-generic label="Celular" type="phone" [required]="true" [(value)]="editForm.phone" (valueChange)="onInputChange('phone', $event)" placeholder="(00) 00000-0000" [checkDuplicate]="editForm.phone !== garageInfo.phone" (duplicateEvent)="onPhoneDuplicate($event)"> </app-input-generic>
+
+                                <app-input-generic label="E-mail" type="email" [required]="true" [(value)]="editForm.email" placeholder="email@exemplo.com" [readonly]="true"> </app-input-generic>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-10 gap-4 mt-4">
+                                <div class="md:col-span-2">
+                                    <app-input-generic label="CEP" type="cep" [required]="true" [(value)]="editForm.address.zipCode" placeholder="00000-000" (blurEvent)="searchAddressByCep()"> </app-input-generic>
+                                </div>
+
+                                <div class="md:col-span-6">
+                                    <app-input-generic label="Rua" [required]="true" [(value)]="editForm.address.street" placeholder="Nome da rua"> </app-input-generic>
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <app-input-generic label="Número" [required]="true" [(value)]="editForm.address.number" placeholder="Número"> </app-input-generic>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                <app-input-generic label="Bairro" [required]="true" [(value)]="editForm.address.district" placeholder="Bairro"> </app-input-generic>
+
+                                <app-input-generic label="Cidade" [required]="true" [(value)]="editForm.address.city" placeholder="Cidade"> </app-input-generic>
+
+                                <app-input-generic label="Estado" [required]="true" [(value)]="editForm.address.state" placeholder="Estado"> </app-input-generic>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 mt-4">
+                                <button (click)="cancelEdit()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors order-2 sm:order-1">Cancelar</button>
+                                <button (click)="saveGarageInfo()" [disabled]="!hasChanges()" class="px-4 py-2 rounded-lg transition-colors order-1 sm:order-2" [ngClass]="hasChanges() ? 'bg-[#EC9253] text-white hover:bg-[#f78839]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'">Salvar Alterações</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-1/3">
+                        <div class="mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">Seu Plano</h2>
+                            <p class="text-sm text-gray-500 mt-1">Informações da sua assinatura atual</p>
+                        </div>
+
+                        <div *ngIf="plan && plan._id" class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg overflow-hidden shadow-sm">
+                            <div class="bg-[#EC9253]/10 p-4 md:p-5 border-b border-[#EC9253]/20">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-[#EC9253] w-14 h-14 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                                        <span class="text-white text-xl font-bold">{{ plan.name?.charAt(0) || "P" }}</span>
+                                    </div>
+
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-xl font-bold text-gray-800 truncate">{{ plan.name || "Plano" }}</h3>
+                                        <div class="flex flex-col text-lg mt-1">
+                                            <div class="flex items-center">
+                                                <span class="font-medium text-[#EC9253]">{{ getPriceDisplayText() }}</span>
+                                            </div>
+                                            <div *ngIf="isAnnualPlan()" class="text-sm text-green-600 font-medium mt-1">Equivalente a R$ {{ formatPrice(getMonthlyEquivalentPrice()) }}/mês</div>
+                                            <div *ngIf="isAnnualPlan()" class="text-xs text-green-600 mt-1">{{ getAnnualSavingsText() }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 border-t border-[#EC9253]/20 pt-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div class="text-sm text-gray-500">Status</div>
+                                            <div class="font-medium text-green-600">{{ getPlanStatusText() }}</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm text-gray-500">{{ plan._id === 'free' ? 'Duração' : 'Tempo restante' }}</div>
+                                            <div class="font-medium">{{ plan._id === 'free' ? 'Ilimitada' : getDaysRemainingText() }}</div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="plan._id !== 'free'" class="mt-3 pt-3 border-t border-gray-200">
+                                        <div class="text-sm text-gray-500">Data de expiração</div>
+                                        <div class="font-medium">{{ subscription.endDate | date : "dd/MM/yyyy" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 md:p-5">
+                                <div class="mt-1">
+                                    <h4 class="font-semibold text-gray-700 mb-3 text-sm flex items-center">
+                                        <svg class="h-4 w-4 text-[#EC9253] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                        RECURSOS INCLUÍDOS
+                                    </h4>
+                                    <ul class="space-y-2 bg-white rounded-lg p-3 shadow-sm">
+                                        <li *ngFor="let feature of plan.features" class="flex items-start text-sm">
+                                            <svg class="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span class="text-gray-700">{{ feature }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="mt-5" *ngIf="canUpgradePlan()">
+                                    <button (click)="handleUpgradePlan()" class="w-full py-3 bg-[#EC9253] text-white rounded-lg hover:bg-[#f78839] transition-colors flex items-center justify-center shadow-md hover:shadow-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                        </svg>
+                                        {{ plan._id === "free" ? "Assinar plano" : "Fazer Upgrade" }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="!plan || !plan._id" class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p>Não foi possível carregar as informações do plano.</p>
+                            <button (click)="loadSubscriptionInfo()" class="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm">Tentar Novamente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTabIndex === 1 && !isLoading" class="animate-fadeIn">
+                <div *ngIf="tabs[1].loading" class="flex justify-center items-center py-10">
+                    <div class="loader-spinner">
+                        <svg class="animate-spin h-10 w-10 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-3 text-gray-600">Carregando informações de segurança...</p>
+                    </div>
+                </div>
+
+                <div *ngIf="!tabs[1].loading">
+                    <div class="mb-6">
+                        <div class="flex items-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#EC9253] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-800">Segurança</h2>
+                                <p class="text-gray-500 text-sm mt-1">Proteja sua conta com configurações de segurança</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!isChangingPassword" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div class="bg-gray-50 p-4 md:p-5 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-800">Senha</h3>
+                            </div>
+                            <p class="text-gray-600 ml-9 mb-4">Sua senha é protegida e armazenada de forma segura. Recomendamos alterá-la periodicamente para maior segurança.</p>
+                            <div class="ml-9">
+                                <button (click)="toggleChangePassword()" class="text-[#EC9253] hover:text-[#f78839] font-medium flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                    Alterar senha
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 md:p-5 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-[#EC9253]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-800">Atividade da Conta</h3>
+                            </div>
+                            <div class="ml-9 space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Último acesso:</span>
+                                    <span class="font-medium">
+                                        {{ garageInfo.lastAccessAt ? (garageInfo.lastAccessAt | date : "dd/MM/yyyy HH:mm") : "Não disponível" }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Último IP:</span>
+                                    <span class="font-medium">{{ garageInfo.lastLoginIp || "Não disponível" }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                        {{ garageInfo.onlineStatus === "online" ? "Online" : "Offline" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="isChangingPassword" class="max-w-lg mx-auto bg-gray-50 p-4 md:p-5 rounded-lg">
+                        <div *ngIf="passwordChangeStep === 0" class="text-center">
+                            <h3 class="font-medium text-gray-800 mb-4">Como você gostaria de alterar sua senha?</h3>
+                            <p class="text-gray-600 text-sm mb-6">Escolha uma das opções abaixo:</p>
+                            
+                            <div class="space-y-3">
+                                <button 
+                                    (click)="selectPasswordChangeMethod('current')" 
+                                    class="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-[#EC9253] hover:bg-[#EC9253]/5 transition-colors text-left">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#EC9253] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v-2l-4.257-4.257A6 6 0 1115 7z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Usar senha atual</div>
+                                            <div class="text-sm text-gray-600">Digite sua senha atual para definir uma nova</div>
+                                        </div>
+                                    </div>
+                                </button>
+
+                                <button 
+                                    (click)="selectPasswordChangeMethod('email')" 
+                                    class="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-[#EC9253] hover:bg-[#EC9253]/5 transition-colors text-left">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#EC9253] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Código por e-mail</div>
+                                            <div class="text-sm text-gray-600">Receba um código no seu e-mail para alterar a senha</div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="text-center mt-6">
+                                <button 
+                                    (click)="cancelChangePassword()" 
+                                    class="text-gray-500 hover:text-gray-700 text-sm">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div *ngIf="passwordChangeStep === 1" class="text-center">
+                            <div class="flex justify-center mb-4">
+                                <svg class="animate-spin h-8 w-8 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="font-medium text-gray-800 mb-2">Enviando código de verificação</h3>
+                            <p class="text-gray-600 text-sm">Um código está sendo enviado para {{ garageInfo.email }}</p>
+                        </div>
+
+                        <div *ngIf="passwordChangeStep === 2" class="text-center">
+                            <h3 class="font-medium text-gray-800 mb-4">Verificação de Segurança</h3>
+                            <p class="text-gray-600 text-sm mb-6">Digite o código enviado para {{ garageInfo.email }}</p>
+                            <app-code-input 
+                                [email]="garageInfo.email" 
+                                context="password_reset" 
+                                (success)="onCodeVerified($event)">
+                            </app-code-input>
+                        </div>
+
+                        <div *ngIf="passwordChangeStep === 3">
+                            <h3 class="font-medium text-gray-800 mb-4">Definir Nova Senha</h3>
+                            <div class="space-y-4">
+                                <app-input-generic 
+                                    type="password" 
+                                    label="Nova Senha" 
+                                    [required]="true" 
+                                    [(value)]="newPasswordForm.newPassword" 
+                                    placeholder="Digite sua nova senha">
+                                </app-input-generic>
+
+                                <app-input-generic 
+                                    type="password" 
+                                    label="Confirmar Nova Senha" 
+                                    [required]="true" 
+                                    [(value)]="newPasswordForm.confirmPassword" 
+                                    placeholder="Confirme sua nova senha">
+                                </app-input-generic>
+
+                                <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+                                    <button 
+                                        (click)="cancelChangePassword()" 
+                                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors order-2 sm:order-1">
+                                        Cancelar
+                                    </button>
+                                    <button 
+                                        (click)="changePasswordWithCode()" 
+                                        [disabled]="!newPasswordForm.newPassword || !newPasswordForm.confirmPassword"
+                                        class="px-4 py-2 rounded-lg transition-colors order-1 sm:order-2"
+                                        [ngClass]="newPasswordForm.newPassword && newPasswordForm.confirmPassword ? 'bg-[#EC9253] text-white hover:bg-[#f78839]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'">
+                                        Alterar Senha
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="passwordChangeStep === 4">
+                            <h3 class="font-medium text-gray-800 mb-4">Alterar Senha</h3>
+                            <div class="space-y-4">
+                                <app-input-generic 
+                                    type="password" 
+                                    label="Senha Atual" 
+                                    [required]="true" 
+                                    [(value)]="passwordForm.currentPassword" 
+                                    placeholder="Digite sua senha atual">
+                                </app-input-generic>
+
+                                <app-input-generic 
+                                    type="password" 
+                                    label="Nova Senha" 
+                                    [required]="true" 
+                                    [(value)]="passwordForm.newPassword" 
+                                    placeholder="Digite sua nova senha">
+                                </app-input-generic>
+
+                                <app-input-generic 
+                                    type="password" 
+                                    label="Confirmar Nova Senha" 
+                                    [required]="true" 
+                                    [(value)]="passwordForm.confirmPassword" 
+                                    placeholder="Confirme sua nova senha">
+                                </app-input-generic>
+
+                                <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+                                    <button 
+                                        (click)="cancelChangePassword()" 
+                                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors order-2 sm:order-1">
+                                        Cancelar
+                                    </button>
+                                    <button 
+                                        (click)="changePassword()" 
+                                        [disabled]="!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword"
+                                        class="px-4 py-2 rounded-lg transition-colors order-1 sm:order-2"
+                                        [ngClass]="passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword ? 'bg-[#EC9253] text-white hover:bg-[#f78839]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'">
+                                        Alterar Senha
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="passwordChangeStep === 1 || passwordChangeStep === 2" class="text-center mt-6">
+                            <button 
+                                (click)="cancelChangePassword()" 
+                                class="text-gray-500 hover:text-gray-700 text-sm">
+                                Cancelar alteração de senha
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTabIndex === 2 && !isLoading" class="animate-fadeIn">
+                <div *ngIf="tabs[2].loading" class="flex justify-center items-center py-10">
+                    <div class="loader-spinner">
+                        <svg class="animate-spin h-10 w-10 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-3 text-gray-600">Carregando informações de permissões...</p>
+                    </div>
+                </div>
+
+                <div *ngIf="!tabs[2].loading">
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#EC9253] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            Permissões do seu plano {{ plan?.name || "atual" }}
+                        </h2>
+                        <p class="text-gray-500 mt-1 ml-8">Faça upgrade para desbloquear mais funcionalidades</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        <div *ngFor="let group of permissionGroups; let i = index" class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                            <div class="px-4 py-3 flex items-center bg-gray-50 border-b border-gray-200">
+                                <div class="w-8 h-8 rounded-full mr-3 flex items-center justify-center bg-[#EC9253]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getPermissionIconPath(group.name)" />
+                                    </svg>
+                                </div>
+                                <h3 class="font-medium text-gray-800">{{ group.name }}</h3>
+                            </div>
+                            <div class="p-4">
+                                <ul class="space-y-2">
+                                    <li *ngFor="let perm of group.permissions" class="flex items-center p-2 rounded-lg transition-colors">
+                                        <span [class]="perm.enabled ? 'text-green-500' : 'text-red-500'" class="mr-3 flex-shrink-0">
+                                            <svg *ngIf="perm.enabled" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <svg *ngIf="!perm.enabled" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </span>
+                                        <span [class]="perm.enabled ? 'text-gray-800 font-medium' : 'text-gray-500'">
+                                            {{ perm.description }}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!permissionGroups.length" class="text-center py-6 text-gray-500 bg-gray-50 rounded-lg">
+                        <p>Nenhuma permissão disponível para exibição.</p>
+                    </div>
+
+                    <div class="mt-8 flex justify-center">
+                        <button (click)="handleUpgradePlan()" class="px-8 py-3 bg-[#EC9253] text-white rounded-lg hover:bg-[#f78839] transition-colors inline-flex items-center shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            </svg>
+                            Fazer Upgrade de Plano
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTabIndex === 3 && !isLoading" class="animate-fadeIn">
+                <div class="mb-6">
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#EC9253] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-800">Sistema</h2>
+                            <p class="text-gray-500 text-sm mt-1">Informações sobre versão e status do sistema</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div class="bg-gray-50 p-4 md:p-5 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-4">Informações do Sistema</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                                <span class="text-gray-600">Versão do Sistema</span>
+                                <span class="font-medium text-gray-800">1.0.0</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                                <span class="text-gray-600">Última Atualização</span>
+                                <span class="font-medium text-gray-800">09/05/2025</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Suporte</span>
+                                <a href="mailto:suporte@smartoficina.com.br" class="text-[#EC9253] hover:underline">suporte&#64;smartoficina.com.br</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 md:p-5 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-4">Recursos do Sistema</h3>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-700">Backup automático diário</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-700">Criptografia de dados</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-700">Monitoramento de performance</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-700">Atualizações automáticas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <div class="bg-gray-50 p-4 md:p-5 rounded-lg border border-gray-200">
+                        <h3 class="font-medium text-gray-800 mb-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Sessão
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Quando terminar de usar o sistema, faça logout para manter sua conta segura.
+                        </p>
+                        <button 
+                            (click)="logout()" 
+                            class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Sair do Sistema
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTabIndex === 4 && !isLoading" class="animate-fadeIn">
+                <div *ngIf="tabs[4].loading" class="flex justify-center items-center py-10">
+                    <div class="loader-spinner">
+                        <svg class="animate-spin h-10 w-10 text-[#EC9253]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-3 text-gray-600">Carregando histórico de pagamentos...</p>
+                    </div>
+                </div>
+
+                <div *ngIf="!tabs[4].loading">
+                    <div class="mb-6">
+                        <div class="flex items-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#EC9253] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-800">Histórico de Pagamentos</h2>
+                                <p class="text-gray-500 text-sm mt-1">Acompanhe todas as suas transações e assinaturas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#EC9253] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="font-medium text-gray-700">Transações</span>
+                            </div>
+                            <span class="text-gray-500 text-sm">{{ subscriptions.length }} pagamento(s)</span>
+                        </div>
+
+                        <div class="overflow-x-auto scrollbar-hide">
+                            <table class="min-w-full">
+                                <thead class="text-gray-700 text-sm font-medium border-b border-gray-200">
+                                    <tr>
+                                        <th class="py-3 px-4 text-left">Data</th>
+                                        <th class="py-3 px-4 text-left">Plano</th>
+                                        <th class="py-3 px-4 text-left">Valor</th>
+                                        <th class="py-3 px-4 text-left">Tipo</th>
+                                        <th class="py-3 px-4 text-left">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 text-sm">
+                                    <tr *ngFor="let sub of subscriptions" class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-3 px-4">{{ sub.createdAt | date : "dd/MM/yyyy" }}</td>
+                                        <td class="py-3 px-4">
+                                            <div class="font-medium">{{ sub.planName }}</div>
+                                            <div *ngIf="sub.couponDiscount > 0" class="text-xs text-purple-600 mt-1">
+                                                Cupom de {{ sub.couponDiscount }}% aplicado
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <div class="font-medium">
+                                                {{ sub.wasFree ? 'R$ 0,00' : 'R$ ' + formatPrice(sub.planPrice) }}
+                                            </div>
+                                            <div *ngIf="sub.couponDiscount > 0 && !sub.wasFree" class="text-xs text-gray-500 line-through">
+                                                R$ {{ formatPrice(sub.originalPrice) }}
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span [class]="getPaymentTypeClass(sub.planChangeType)">
+                                                {{ getPaymentTypeDisplay(sub.planChangeType) }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span [class]="getPaymentStatusClass(sub.paymentStatus)">
+                                                {{ getPaymentStatusDisplay(sub.paymentStatus) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div *ngIf="!subscriptions.length" class="text-center py-10 text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p>Nenhum histórico de pagamento disponível.</p>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 border-t border-gray-200 flex justify-end">
+                            <div class="text-xs text-gray-500">Para mais informações sobre seus pagamentos entre em contato com o suporte.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="min-w-full relative overflow-x-auto">
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-gray-100">
+            <tr>
+                <th *ngIf="hasCheckbox" class="py-2 px-3 text-center w-10">
+                    <div class="flex justify-center">
+                        <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '16px', height: '16px' }"> </ngx-skeleton-loader>
+                    </div>
+                </th>
+                <th *ngFor="let column of columns" class="py-2 px-4 text-left">
+                    <ngx-skeleton-loader count="1" appearance="line" [theme]="{ height: '20px', width: '80px', 'border-radius': '4px' }"> </ngx-skeleton-loader>
+                </th>
+                <th *ngIf="hasActions" class="py-2 px-4 text-center sticky right-0 bg-gray-100 shadow-sm z-10 w-28 actions-column">
+                    <ngx-skeleton-loader count="1" appearance="line" [theme]="{ height: '20px', width: '50px', 'border-radius': '4px' }"> </ngx-skeleton-loader>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of skeletonRows" class="border-b">
+                <td *ngIf="hasCheckbox" class="py-2 px-3 text-center">
+                    <div class="flex justify-center">
+                        <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '16px', height: '16px' }"> </ngx-skeleton-loader>
+                    </div>
+                </td>
+                <td *ngFor="let column of columns; let colIndex = index" class="py-2 px-4">
+                    <ngx-skeleton-loader
+                        count="1"
+                        appearance="line"
+                        [theme]="{
+                            height: '16px',
+                            width: getColumnWidth(colIndex),
+                            'border-radius': '4px'
+                        }">
+                    </ngx-skeleton-loader>
+                </td>
+                <td *ngIf="hasActions" class="py-2 px-4 text-center sticky right-0 bg-white shadow-sm z-10 actions-column">
+                    <div class="flex justify-center space-x-2">
+                        <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '32px', height: '32px' }"> </ngx-skeleton-loader>
+                        <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '32px', height: '32px' }"> </ngx-skeleton-loader>
+                        <ngx-skeleton-loader count="1" appearance="circle" [theme]="{ width: '32px', height: '32px' }"> </ngx-skeleton-loader>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
