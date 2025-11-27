@@ -12,8 +12,8 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the application with base href
+RUN npm run build -- --base-href=/system/
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
