@@ -171,16 +171,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isSubmenuActive(item: MenuItem): boolean {
     if (!item.submenuItems) return false;
-    return item.submenuItems.some((subItem) => this.router.url.includes(`system/${subItem.route}`));
+    return item.submenuItems.some((subItem) => this.router.url.includes(subItem.route));
   }
 
   private isSubmenuItemRouteActive(item: MenuItem, url: string): boolean {
     if (!item.submenuItems) return false;
-    return item.submenuItems.some((subItem) => url.includes(`system/${subItem.route}`));
+    return item.submenuItems.some((subItem) => url.includes(subItem.route));
   }
 
   isSubmenuItemActive(route: string): boolean {
-    return this.router.url.includes(`system/${route}`);
+    return this.router.url.includes(route);
   }
 
   toggleSubmenu(label: string, event: Event): void {
@@ -310,8 +310,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   navigateTo(route: string): void {
     if (!this.transitionInProgress) {
-      this.router.navigate([`system/${route}`]);
-      
+      this.router.navigate([route]);
+
       // Fechar menu mobile após navegação
       if (this.isMobileView && this.mobileMenuOpen) {
         setTimeout(() => this.closeMobileMenu(), 150);
@@ -320,7 +320,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   isActive(route: string): boolean {
-    return this.router.url.includes(`system/${route}`);
+    return this.router.url.includes(route);
   }
 
   logout(): void {
