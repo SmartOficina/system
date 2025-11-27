@@ -1020,7 +1020,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         document.body.classList.add("fade-out");
         setTimeout(() => {
           localStorage.removeItem("token");
-          this.router.navigate(["/system/login"]);
+          this.router.navigate(["/login"]);
           setTimeout(() => {
             document.body.classList.remove("fade-out");
           }, 500);

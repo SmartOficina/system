@@ -44,7 +44,7 @@ export class GarageSystemService {
   autoLogin(response: HttpResponse<any>, redirect: boolean): void {
     localStorage.setItem("token", response.body?.token);
     this.updateGarage(response.body?.garage);
-    if (redirect) this.router.navigate(["/system"]);
+    if (redirect) this.router.navigate(["/dashboard"]);
   }
 
   garageAuthenticateWithCnpjCpf(cnpjCpf: string, password: string): Observable<HttpResponse<any>> {
@@ -56,7 +56,7 @@ export class GarageSystemService {
   }
 
   handleUpgradePlan(): void {
-    this.router.navigate(["/"], { queryParams: { plans: true } });
+    window.location.href = environment.landing_url + "?plans=true";
   }
 
   handleMoreInfo(): void {

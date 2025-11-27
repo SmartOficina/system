@@ -7,6 +7,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 import { InputGenericComponent } from '@shared/components/input-generic/input-generic.component';
 import { CodeInputComponent } from '@shared/components/code-input/code-input.component';
+import { environment } from '@environment/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -157,7 +158,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (response.status === 200) {
             localStorage.setItem('token', response.body?.token);
             this.garageSystemService.updateGarage(response.body?.garage);
-            this.router.navigate(['/system']);
+            this.router.navigate(['/dashboard']);
             this.isLoading = false;
           } else {
             if (response.status === 202 && response.body?.garage?.id) {
@@ -189,7 +190,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: (response: HttpResponse<any>) => {
           if (response.status === 200) {
             this.garageSystemService.updateGarage(response.body?.garage);
-            this.router.navigate(['/system']);
+            this.router.navigate(['/dashboard']);
           }
           this.isLoading = false;
         },
@@ -262,7 +263,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   goToHome(): void {
-    this.router.navigate(['/']);
+    window.location.href = environment.landing_url;
   }
 
   startCooldown(seconds: number): void {

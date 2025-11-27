@@ -56,6 +56,6 @@ export class AuthGuard {
 
   private redirectToLogin(): void {
     localStorage.removeItem('token');
-    this.router.navigate(['/system/login']);
+    this.router.navigate(['/login']);
   }
 }

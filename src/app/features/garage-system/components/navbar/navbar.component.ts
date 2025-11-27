@@ -330,7 +330,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
           localStorage.removeItem("token");
-          this.router.navigate(["/system/login"]);
+          this.router.navigate(["/login"]);
 
           setTimeout(() => {
             document.body.classList.remove("fade-out");

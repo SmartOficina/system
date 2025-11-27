@@ -31,7 +31,8 @@
     }
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "ambiente.json"
   ],
   "exclude": [
     "src/**/*.spec.ts"
